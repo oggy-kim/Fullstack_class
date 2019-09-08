@@ -15,5 +15,5 @@ It's a bootcamp for beginner that makes us full-stack programmer.
 
    * HTML
    * CSS
-   * [Javascript](master/webfront/Javascript.md) <-- Now -ing
+   * [Javascript](/webfront/Javascript.md) <-- Now -ing
 
