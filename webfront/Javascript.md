@@ -244,3 +244,224 @@ decodeURIComponent : encodeURIComponent로 인코딩된 문자를 디코딩
     }
 </script>
 ```
+
+## 객체
+
+### 객체 선언 및 호출
+
+> 객체는 키 값을 사용하여 속성을 식별
+> 중괄호를 사용하여 객체를 생성하며, 속성에는 모든 자료형이 올 수 있다.
+
+```javascript
+<script>
+    function test(){
+        var product = {
+                pName:'Strawberry Juice',
+                type:'Fruit',
+                ingredient:['strawberry', 'sugar'],
+                origin:'Korea'
+        }
+
+        // 객체명.속성명으로 접근하기
+        console.log(product.pName); // Strawberry Juice
+        console.log(product.type); // Fruit
+        console.log(product.ingredient[0]); // strawberry
+        console.log(product.ingredient[1]); // sugar
+        console.log(product.origin); // Korea
+
+        // 객체명['속성명']으로 접근하기(위와 동일한 결과)
+        console.log(product['pName']);
+        console.log(product['type']);
+        console.log(product['ingredient'][0]);
+        console.log(product['origin']);
+</script>
+```
+
+### 객체의 키 식별자 테스트
+
+> 객체의 키는 *모든 문자열* 사용 가능.
+> 단, 식별자로 사용할 수 없는 단어를 사용한 경우에는 무조건 `[]` *대괄호*를 사용해야 접근가능
+
+```javascript
+<script>
+    function test() {
+        var objTest = {
+            'hello World':'Hello World!!',
+            '!@#$%^&*()': 1234567890
+        }
+
+        // console.log(objTest.'hello world');
+        // console.log(objTest.'!@#$%^&*()');
+        // -> 식별자로 사용할 수 없는 단어를 사용했기에, 접근 불가능.
+
+        // 대괄호를 사용하여 접근 가능
+        console.log(objTest['hello World']);
+        console.log(objTest['!@#$%^&*()']);
+    }
+</script>
+```
+
+### 객체의 메소드 속성
+
+> 객체의 속성 중 함수 자료형인 속성을 메소드라고 부름
+
+```javascript
+<script>
+    function test() {
+        var name = "이재성";
+        var player = {
+            name:'서보민',
+            play:function(role){
+                // 객체 내에서 자신의 속성을 호출할 때에는 반드시 this 사용
+                console.log(this.name + '이 ' + role + '을 합니다.');
+
+                console.log('name : ' + name); // 이재성
+                console.log('this.name : ' + this.name); // 서보민
+            }
+        }
+        console.log(player.play('연습')); // 서보민이 연습을 합니다.
+    }
+</script>
+```
+
+### 반복문
+
+> 객체의 속성을 살펴볼 때에는 단순 for문으로는 사용 불가능, `for in` 문을 사용해야 함
+
+```
+for in문 : 객체의 속성에 순차적으로 접근
+```
+
+```javascript
+<script>
+    function test() { 
+        var game = {
+            title: 'FM2020',
+            price: '$35.2',
+            language : 'Supports Korean',
+            supportOS : 'windows x64, x86',
+            service: true
+        }
+
+        for(var key in game) {
+            console.log(key + " : " + game[key]);
+            // title : FM2020
+            // price : $35.2
+            // language : Supports Korean
+            // supportOS : windows x64, x86
+            // service : true
+        }
+    }
+</script>
+```
+
+### in / with
+
+*in* : 객체 _내부_ 에 해당 속성이 있는지 확인하는 키워드
+
+*with* : 코드를 줄여주는 키워드. 호출 시 객체명 생략 가능
+
+```javascript
+
+<script>
+    function test() {
+        var name = '현정';
+        var kor = 100;
+        var eng = 80;
+        var math = 90;
+
+        // 객체 생성
+        var student = {
+            name: name,
+            kor: kor,
+            eng: eng,
+            math: math
+        }
+
+        // in 사용하여 객체에 속성 존재여부 확인
+        console.log('name' in student); // true
+        console.log('kor' in student); // true
+        console.log('eng' in student); // true
+        console.log('math' in student); // true
+        console.log('sum' in student); // false
+
+        // with 키워드 사용하여 접근
+        with(student) { // -> with를 사용해 student라는 객체명을 여러번 사용하지 않아도 됨
+            console.log(name); // 현정
+            console.log(kor); // 100
+            console.log(eng); // 80
+            console.log(math); // 90
+            console.log(kor + eng + math); // 270 (객체 내 속성간의 sum)
+        }
+</script>
+```
+
+### 속성 추가/제거
+
+> 처음 객체생성한 이후 속성의 추가/제거를 동적으로 처리 가능
+
+```javascript
+<script>
+    function test() {
+        // 빈 객체 선언
+        var player = {}
+
+        // 객체에 속성을 추가
+        player.name = "Eder";
+        player.hobby = "Football";
+        player.dream = "Kleague champ";
+
+        console.log(player);
+
+        // 객체에서 속성 제거
+        delete(player.dream); 
+
+        console.log(player); // dream : "Kleague champ"이 삭제됨
+    }
+</script>
+```
+
+### 객체 배열
+
+객체와 배열을 활용한 데이터 관리
+
+```javascript
+<script>
+    function test() {
+        // 임의의 객체 생성
+        var student0 = {name:'보민', java:100, oracle: 90, html5: 80, CSS3: 70, javascript: 60}
+        var student1 = {name:'고민', java:100, oracle: 90, html5: 80, CSS3: 70, javascript: 60}
+        var student2 = {name:'노민', java:100, oracle: 90, html5: 80, CSS3: 70, javascript: 60}
+        var student3 = {name:'도민', java:100, oracle: 90, html5: 80, CSS3: 70, javascript: 60}
+
+        // 배열 선언
+        var students = [];
+        // 배열에 객체 추가
+        students.push(student0);
+        students.push(student1);
+        students.push(student2);
+        students.push(student3);
+
+        // 각 개체별 메소드 추가
+        for(var i in students) {
+            students[i].getSum = function(){
+                return this.java + this.oracle + this.html5 + this.CSS3 + this.javascript;
+            }
+            students[i].getAvg = function(){
+                return this.getSum() / 5;
+            }
+        }
+
+        // 모든 객체의 정보가 담긴 배열의 메소드를 통해 총점과 평균 출력
+        for(var i in students) {
+            with(students[i]) {
+                console.log("이름 : " + name + ", 총점 : " + getSum() + ", 평균 : " + getAvg());
+                // 이름 : 보민, 총점 : 400, 평균 : 80
+                // 이름 : 고민, 총점 : 400, 평균 : 80
+                // 이름 : 노민, 총점 : 400, 평균 : 80
+                // 이름 : 도민, 총점 : 400, 평균 : 80
+            }
+        } 
+    }
+</script>
+```
