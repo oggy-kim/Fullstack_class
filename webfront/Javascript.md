@@ -465,3 +465,494 @@ for in문 : 객체의 속성에 순차적으로 접근
     }
 </script>
 ```
+
+### 객체 관련 키워드
+
+1. instanceof 키워드
+
+> 해당 객체가 어떤 생성자함수로 생성이 되었는지 검사
+
+```javascript
+<script>
+    function Laptop(pName, price) { // 객체 정의
+        this.pName = pName;
+        this.price = price;
+    }
+
+    function test() {
+        var myLaptop = new Laptop("Dell XPS15 9570", 2500000); // 생성자를 통한 객체 생성
+        console.log(myLaptop instanceof Laptop); // true
+        console.log(myLaptop instanceof Student); // false
+        }
+</script>
+```
+
+## 캡슐화(Encapsulation) & 상속(Inherit)
+
+### 캡슐화
+
+```
+생성자 함수에서 속성 선언시, this 키워드를 사용하지 않고 지역변수로 선언하게 되면
+캡슐화된 객체의 속성은 직접 접근이 불가능
+    -> 간접 접근할 수 있도록 this 키워드를 사용하여 getter/setter 메소드 작성
+```
+
+```javascript
+<script>
+    function FootballLeague(ln, tc, t){ // 객체 정의
+        var leagueName = ln; // 지역변수로 선언
+        var teamCount = tc;
+        var teams = t;
+
+        // getter
+        this.getLeagueName = function() {
+            return leagueName;
+        }
+
+        this.getTeamCount = function(){
+            return teamCount;
+        }
+
+        this.getTeams = function(){
+            return teams;
+        }
+
+        // setter
+        this.setLeagueName = function(ln){
+            leagueName = ln;
+        }
+
+        this.setTeamCount = function(t){
+            teamCount = tc;
+        }
+
+        this.setTeams = function(t){
+            teams = t;
+        }
+    }
+    function test() {
+        var ln = 'K League';
+        var tc = 4;
+        var t = ['SeongnamFC', 'Jeonbuk Hyundai', 'SuwonFC', 'Busan IPark'];  
+        // 생성자 함수를 이용하여 객체 생성
+        var kleague = new FootballLeague(ln, tc, t);
+
+        console.log(kleague); // K League
+        console.log(kleague.teams); // undefined : 직접 접근 불가
+
+        console.log(kleague.getTeamCount()); // 4 : 간접 접근
+
+        // 객체에 간접 접근해서 탈퇴멤버 삭제
+        kleague.getTeams().splice(kleague.getTeams().indexOf('SuwonFC'),1);
+        kleague.setTeamCount(3);
+
+        console.log(kleague.getTeamCount()); // 3 : 간접 접근
+        console.log(kelague.getTeams()); // SeongnamFC, Jeonbuk Hyundai, Busan IPark
+    }
+</script>
+```
+
+### 상속
+
+Javascript에는 Class가 존재하지 않아 Java와 같은 상속을 할 수 없음
+대신 *prototype*이라는 것을 이용하여 상속과 비슷한 효과를 낼 수 있음
+
+### 프로토타입(Prototype)
+
+Javascript에서 객체와 객체를 연결하여 속성, 메소드를 공유함
+(단, 공유한 정보는 한쪽 방향으로만 공유됨)
+
+* 프로토타입의 종류
+
+    * `__proto__` (Prototype Link) : 상위 객체로부터 물려받은 프로토타입 정보
+    * `prototype`(Prototype Object) : 하위 객체로 물려줄 프로토타입 정보(현재 객체 정보)
+    * -> `console.log(객체);` 호출 시 개발자 도구에서 확인 가능
+
+```javascript
+<script>
+    function Book(t, p, dr){ // 캡슐화 된 Book 생성자 함수
+        var title = t;
+        var price = p;
+        var discountRate = dr;
+
+        // getter
+        this.getTitle = function(){
+            return title;
+        }
+
+        this.getPrice = function(){
+            return price;
+        }
+
+        this.getDiscountRate = function(){
+            return discountRate;
+        }
+        
+        // setter
+        this.setTitle = function(t){
+            title = t;
+        }
+
+        this.setPrice = function(p){
+            if(p < 0){
+                throw '가격은 음수값을 가질 수 없습니다.';
+            }else{
+                price = p;
+            }
+        }
+
+        this.setDiscountRate = function(dr){
+            if(dr < 0){
+                throw '할인율은 음수값을 가질 수 없습니다.';
+            }else{
+                discountRate = dr;
+            }
+        }
+        // this.getSellPrice = function(){
+        //     return this.getPrice() * (1 - this.getDiscountRate());
+        // }
+        // -> Book 객체 내에 직접 메소드 구현
+    }
+    
+    // Book 객체 정보를 나타내는 prototype에 함수 속성 추가
+    // 바로 위 주석 처리 된 this.getSellPrice와 같은 기능을 함
+    Book.prototype.getSellPrice = function(){
+        return this.getPrice() * (1 - this.getDiscountRate());
+    }
+
+    function test(){
+        var book1 = new Book("Do it! Javascript", 20000, 0.1); // Book 객체 생성
+        console.log(book1.getTitle() + book1.getSellPrice()); // Do it! Javascript18000
+    }
+</script>
+```
+
+상속 확인
+
+```javascript
+<script>
+    function Novel(t, p, dr, tp){ // Book 생성자 함수를 가져와 지역 변수에 담음
+        this.base = Book;
+
+        this.base(t, p, dr); // 가져온 Book 생성자 함수를 호출하여 객체 생성
+
+        var type = tp; // 접근 제한 된 속성 선언
+
+        // 간접 접근을 위한 getter/setter 생성
+        this.getType = function(){ 
+            return type;
+        }
+
+        this.setType= function(tp){
+            type = tp;
+        }
+    }
+
+    console.log(Book.prototype); // -> Book.prototype에는 Book 생성자와 getSellPrice()가 존재
+    Novel.prototype = new Book();
+    console.log(Novel.prototype); // -> Book 생성자에 존재하는 function들과 Book.prototype이 담김
+
+    function test(){ // tp 속성을 추가한 Novel 객체로 생성, 기존 Book 객체의 속성을 그대로 상속함
+        var novel1 = new Novel('나무', 30000, 0.2, '소설');
+
+        console.log(novel1.getTitle()); // 나무
+        console.log(novel1.getSellPrice()); // 24000
+    }
+</script>
+```
+
+## 내장 객체
+
+### Object 객체
+
+> Javascript의 가장 기본적인 내장객체로, Object 생성자 함수를 통해 만들어진 인스턴스
+
+* 생성 방법
+
+```javascript
+<script>
+    function test1(){
+        // Object를 생성하는 방법
+        var obj1 = {};
+        var obj2 = new Object();
+
+        console.log(obj1); // Object
+        console.log(obj2); // Object
+    }
+</script>
+```
+
+* Object 객체 기본메소드 : hasOwnProperty() / propertyIsEnumerable()
+
+  * hasOwnProperty() : 속성을 가지고 있는지 확인하는 메소드로 true와 false를 리턴
+  * propertyIsEnumerable() : 열거할 수 있는 프로퍼티란 내부적으로 enumerable 플래그가 true로 설정된 Property -> for / in 문으로 접근할 수 있다.
+
+```javascript
+<script>
+    function test(){
+        var object = { // name, age를 가진 객체 생성
+            name: "asd",
+            age: 20
+        } 
+
+        console.log(object.hasOwnProperty('name')); // true
+        console.log(object.hasOwnProperty('age')); // true
+        console.log(object.hasOwnProperty('score')); // false
+
+        console.log(object.propertyIsEnumerable('name')); // true
+        console.log(object.propertyIsEnumerable('age')); // true
+    }
+</script>
+```
+
+* constructor() 메소드
+
+  * Object가 가지는 객체의 생성자 메소드로, 자료형을 검사할 때 유용하게 사용할 수 있음
+
+```javascript
+<script>
+    function test(){
+        var num1 = 120;
+        var num2 = new Number(120);
+
+        console.log(typeof(num1)); // number
+        console.log(typeof(num2)); // object
+        console.log(num1 + num2); // 240(형태가 다르지만 계산은 가능)
+
+        // 두 대상을 같은 자료형으로 취급하고 싶을 때 constructor 메소드로 사용
+        console.log(num1.constructor == Number); // true
+        console.log(num2.constructor == Number); // true
+        }
+</script>
+```
+
+### Number 객체
+
+* toFixed() : 숫자를 고정 소수점 자리로 나타낸 문자열을 만든다.
+
+```javascript
+<script>
+    function test(){
+        var num1 = 123.456789;
+        var num2 = 123;
+
+        console.log(num1); // 123.456789
+        console.log(num2); // 123
+        console.log(num1.toFixed(1)); // 123.5 : 반올림
+        console.log(num1.toFixed(4)); // 123.4568 
+        console.log(num2.toFixed(4)); // 123.0000
+        console.log(typeof(num1.toFixed(1))); // String
+    }
+</script>
+```
+
+### String 객체의 HTML 관련 메소드
+
+* String 객체의 메소드는 크게 기본 메소드 & HTML 관련 메소드로 구분
+
+```javascript
+<script>
+    function test(){
+        var str = "Javascript";
+
+        // 각 메소드에 따라 HTML에 표시되는 내용이 변경됨
+        console.log(str);
+        console.log(str.big());
+        console.log(str.bold());
+        console.log(str.fontcolor('red'));
+        console.log(str.fontsize(20));
+        console.log(str.italics());
+        console.log(str.link("http://www.google.com"));
+        console.log(str.strike());
+        console.log(str.sub());
+        console.log(str.sup());
+    }
+</script>
+```
+
+### Date 객체
+
+* Date 객체 입력값에 따른 출력 확인
+
+```javascript
+<script>
+    function test(){
+        // GMT 시간
+        var date1 = new Date();
+        var date2 = new Date('June 18'); // Jun 등으로 작성도 가능
+        var date3 = new Date('June 18, 2019');
+        var date4 = new Date('June 18, 2019 09:00:00');
+
+        console.log(date1); // Mon Sep 09 2019 14:52:49 GMT+0900 (한국 표준시)
+        console.log(date2); // Mon Jun 18 2001 00:00:00 GMT+0900 (한국 표준시)
+        console.log(date3); // Tue Jun 18 2019 00:00:00 GMT+0900 (한국 표준시)
+        console.log(date4); // Tue Jun 18 2019 09:00:00 GMT+0900 (한국 표준시)
+
+        
+        // UTC 시간
+        var date5 = new Date(2019, 6-1, 18);
+        var date6 = new Date(2019, 6-1, 18, 9, 0, 0);
+
+        console.log(date5); // Tue Jun 18 2019 00:00:00 GMT+0900 (한국 표준시)
+        console.log(date6); // Tue Jun 18 2019 09:00:00 GMT+0900 (한국 표준시)
+    }
+</script>
+```
+
+### Date 객체 메소드
+
+```javascript
+<script>
+    function test(){
+        var date = new Date();
+
+        console.log(date.get)
+
+
+        console.log(date.getFullYear()); // 2019
+        console.log(date.getMonth()); // 8(실제는 9월이나, 월은 0부터 count)
+        console.log(date.getHours()); // 14
+        console.log(date.getMinutes()); // 55
+        console.log(date.getMilliseconds()); // 656
+        // UTC(협정세계시)와 시스템이 속해 있는 지역의 시간의 차이 리턴
+        console.log(date.getTimezoneOffset()); // -540
+        console.log(date.getTime()); // 1568008547656
+
+        // 1970년 1월 1일 자정 기준 밀리세컨 단위로 객체 생성
+        var date2 = new Date(new Date(2019, 5, 18, 9, 0, 0, 0).getTime());
+        console.log(date2); // Tue Jun 18 2019 09:00:00 GMT+0900 (한국 표준시)
+
+        // 날짜 사이의 간격 구하기
+        var now = new Date(); // 현재 날짜
+        var start = new Date('June 18, 2019'); // 시작 시점
+        
+        var interval = now.getTime() - start.getTime();
+        interval = Math.floor(interval / (1000*60*60*24)); // Milliseconds를 일자 단위로 변환
+        alert('It's ' + interval + 'days since I studied coding.... ');
+    }
+</script>
+```
+
+## BOM
+
+### Window 객체는 Javascript의 최상위 객체로, BOM과 DOM으로 나뉨
+
+> BOM(Browser Object Model) : location 객체, navigator 객체, history 객체, screen 객체
+> DOM(Document Object Model) : document 객체
+
+* open() 메소드
+```javascript
+<button onclick="test1();">Javascript</button>
+<button onclick="test2();">Google</button>
+<script>
+    function test1() {
+        // window.open();
+
+        // window.open('주소'), '이름 또는 open방식,', '형태'); 로 작성
+        window.open("Javascript.md", 'popup1', 'width=300, height=360'); // 클릭시 새 팝업창으로 Javascript.md 파일 오픈
+    }
+    function test2() {
+        window.open("http://www.google.com", "_self"); // 클릭시 기존 창에 google 사이트 오픈
+    }
+</script>
+```
+
+### timer() 메소드
+
+* setTimeout() : 정해진 시간 이후 실행하는 메소드
+
+```javascript
+<script>
+    function test3() {
+        var myWindow = window.open(); // 새 윈도우창 열림
+        myWindow.alert("3초 후에 이 페이지는 종료됩니다."); // 팝업창
+        window.setTimeout(function() { // 3000Miliseconds(3초) 후 myWindow.close() Function 수행
+            myWindow.close();
+        }, 3000);
+    }
+</script>
+```
+
+* setInterval() : 정해진 시간마다 반복적으로 메소드를 실행
+
+```javascript
+<script>
+    // 시계 구현하는 function
+    function clock() {
+        window.setInterval(function(){ // area의 innerHTML에 1초에 한번씩 시간을 업데이트해줌
+            var date = new Date();
+            area.innerHTML =
+            date.getHours() + " : " + date.getMinutes() + " : " + date.getSeconds();
+        },1000); 
+    }
+</script>
+```
+
+* clearInterval() : 반복되는 인터벌 설정을 해제하는 메소드
+
+```javascript
+// 버튼을 누름에 따라 스톱워치처럼 구현하는 메소드
+
+<button onclick="test1();">GO!</button>
+<button onclick="test1_2();">STOP!</button>
+<button onclick="test1_3();">RESET!</button>
+<div id="area"></div>
+<script>
+    var stop = false;
+    var timer;
+    var count = 0;
+
+    function test1() {
+        var area2 = document.getElementById("area");
+
+            timer = window.setInterval(function(){
+                area2.innerHTML = parseInt(count/100/60%60) + " : " + // 분
+                                    parseInt(count/100%60) + " : " + // 초
+                                    parseInt(count%100);             // 1/100초
+                count++;
+            }, 10); // 0.01초마다 update
+    }
+
+    function test1_2() {
+        clearInterval(timer); // test1()에서 실행중인 timer의 setInterval 메소드를 중지
+    }
+
+    function test1_3() {
+        clearInterval(timer);
+        count = 0; // 다시 숫자를 0으로 변경
+        area2.innerHTML = parseInt(count/100/60%60) + " : " +
+                                    parseInt(count/100%60) + " : " +
+                                    parseInt(count%100);
+    }
+</script>
+```
+
+### screen 객체
+
+> 웹 브라우저 화면이 아닌 운영체제 화면의 속성을 가지는 객체
+
+```javascript
+<script>
+    function test() {
+        var width = screen.width;
+        var height = screen.height;
+
+        child = window.open("","", "width=800, height=500"); // 정해진 크기의 빈 창 열기
+
+        child.resizeTo(width, height);
+
+        setInterval(function() {
+            child.resizeBy(-20, -20); // 20씩 width, height를 감소
+            child.moveBy(10, 10); // 10씩 이동
+        }, 500); // 500Milliseconds마다(0.5초)
+
+        console.log(screen.height); // 화면높이
+        console.log(screen.width); // 화면너비
+        console.log(screen.availWidth); // 실제 화면에서 사용 가능한 너비
+        console.log(screen.availHeight); // 실제 화면에서 사용 가능한 높이
+        console.log(screen.colorDepth); // 사용 가능한 색상 수
+        console.log(screen.pixelDepth); // 한 픽셀 당 비트 수
+    }
+</script>
+```
+
