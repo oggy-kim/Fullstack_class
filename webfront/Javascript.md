@@ -833,7 +833,7 @@ Javascript에서 객체와 객체를 연결하여 속성, 메소드를 공유함
 </script>
 ```
 
-## BOM
+## BOM(Browser Object Model)
 
 ### Window 객체는 Javascript의 최상위 객체로, BOM과 DOM으로 나뉨
 
@@ -952,6 +952,534 @@ Javascript에서 객체와 객체를 연결하여 속성, 메소드를 공유함
         console.log(screen.availHeight); // 실제 화면에서 사용 가능한 높이
         console.log(screen.colorDepth); // 사용 가능한 색상 수
         console.log(screen.pixelDepth); // 한 픽셀 당 비트 수
+    }
+</script>
+```
+
+### location 객체
+
+* 브라우저의 주소 표시줄과 관련된 객체
+
+  * Location 객체의 속성 확인
+
+```javascript
+<script>
+    function test(){
+        for(var key in location) {
+            console.log(key + " : " + location[key]);
+        }
+    }
+</script>
+```
+
+  * location 객체를 통한 사이트 이동
+
+```javascript
+<button onclick="location = 'http://www.google.com'">구글로 이동</button>
+<button onclick="location.href = 'http://www.google.com'">구글로 이동</button>
+<br>
+
+<button onclick="location = location">새로고침</button>
+<button onclick="location.href = location.href">새로고침</button>
+<!-- reload()는 현재 위치에서 새로고침 -->
+<button onclick="location.reload()">새로고침(현 위치 유지)</button>
+<br>
+
+<button onclick="location.assign('http://google.com')">구글로 이동</button>
+<!-- replace는 뒤로가기 사용 불가 -->
+<button onclick="location.replace('http://google.com')">구글로 이동</button>
+```
+
+### navigator 객체
+
+* 웹페이지를 실행하고 있는 브라우저에 대한 정보를 가지고 있는 객체
+
+```javascript
+<script>
+    function test() {
+        for(var key in navigator) {
+            str += (key + " : " + navigator[key] + "\n");
+        }
+        alert(str); // 알림창으로 navigator 객체의 속성 확인
+
+        // navigator 객체의 주요속성
+        console.log("브라우저의 코드명 : " + navigator.appCodeName);
+        console.log("브라우저의 이름 : " + navigator.appName);
+        console.log("브라우저 전체정보 : " + navigator.userAgent);
+        console.log("브라우저 언어 : " + navigator.language);
+        console.log("사용중인 운영체제 : " + navigator.platform);
+    }
+</script>
+```
+
+### History 객체
+
+* 페이지에서 활동한 이력 등을 확인 가능함
+
+```javascript
+<script>
+    function test() {
+
+        console.log(history.length); /* 뒤로가기 할 수 있는 페이지 수 */
+
+        history.back(); // 현재 페이지의 한단계 이전페이지로 이동
+        history.go(-1); // 이전 또는 이후 페이지의 이동이 가능(인자 -1 : 이전, 1 : 이후)
+        history.forward(); //  이후 페이지인 다음 페이지로 이동(history.go(1) 과 동일)
+    }
+</script>
+```
+
+***
+
+## DOM(Document Object Model)
+
+HTML에 있는 태그들을 구조화(트리)하였을 때, 각각의 태그를 **노드(Node)**라고 한다.
+
+### 텍스트노드(TextNode)가 있는 노드 생성
+
+```javascript
+<div id="area"></div> // area div 영역에 생성
+<script>
+    function test() {
+        // element 생성
+        var title = document.createElement("h3"); // <h3></h3> 태그를 의미
+
+        // textnode 생성
+        var textNode = document.createTextNode('Hello, World!'); // hn, p 태그 등에 들어가는 text를 의미
+
+        // 노드를 연결
+        title.appendChild(textNode); // title이라는 <h3> 태그에 textNode의 text 연결 --> <h3>Hello, World!</h3>
+
+        // area1에 출력
+        document.getElementById("area").appendChild(title); // area1(div 요소)에 title이라는 요소 노드를 연결
+        console.log(title); // Hello, World!
+    }
+</script>
+```
+
+### 텍스트노드(TextNode)가 없는 노드 생성
+
+```javascript
+<button onclick="testAdd();">이미지 추가</button> // 버튼 클릭하면 노드 생성하여 추가
+<div id="area"></div> // area div 영역에 생성
+<script>
+    function testAdd() {
+        var imgTest = document.createElement('img'); // img 태그 생성
+
+        // 속성 지정
+        imgTest.src = "https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Berlin_Skyline_Fernsehturm_02.jpg/1600px-Berlin_Skyline_Fernsehturm_02.jpg";
+        imgTest.width = "200";
+        imgTest.height = "150";
+        imgTest.myProperty = "123"; // 없는 속성은 줄 수 없으므로
+        imgTest.setAttribute('myProperty', "123"); // 없는 속성을 주기 위해서는 setAttribute() 사용
+
+        document.getElementById("area").appendChild(imgTest); // area div에 이미지 출력
+    }
+</script>
+```
+
+### 노드 삭제
+
+```javascript
+// 위 이미지 추가와 연계하여 확인
+<button onclick="testDelete();">이미지 삭제</button>
+<script>
+    function testDelete() {
+        var img = document.getElementsByTagName('img'); // 삭제할 노드 찾기
+        var area = document.getElementById("area"); // 삭제할 노드의 부모 찾기
+
+        // 찾은 부모에 대한 노드 삭제(3가지 방법)
+        area.removeChild(img[0]);
+        area.firstChild.remove(); // 첫번째 노드 삭제
+        area.lastChild.remove(); // 마지막 노드 삭제
+    }
+</script>
+```
+
+### 노드의 스타일 지정
+
+```javascript
+<div id="area"></div> // 'area' div 영역에 생성
+<script>
+    function test() {
+        var area = document.getElementById("area"); // 스타일 지정할 노드 찾기
+
+        // 해당 노드의 스타일 지정
+        area.style.backgroundColor = "orangered";
+        area.style.borderRadius = "50px";
+        area.style.transition = "all 2s";
+    }
+</script>
+```
+
+***
+
+## 이벤트(Event)
+
+### 고전 이벤트 모델
+
+```
+요소 객체가 갖고 있는 이벤트 속성에 이벤트 핸들러를 연결하는 방법으로,
+이벤트 객체를 제거할 때는 속성값에 null을 넣어주면 된다.
+```
+
+```javascript
+<button id="test1">test1() 실행확인</button>
+<button id="test2">test2() 실행확인</button>
+<script>
+    test1.onclick = function() {
+         alert("!");
+    }
+    test1.onclick = function() { // 하나의 이벤트밖에 연결하지 못함(alert가 포함된 이벤트는 실행불가)
+        console.log("test1()이 실행되었습니다. ");
+    }
+
+    test2.onclick = function() {
+        console.log("test2()이 실행되면서 test1() 이벤트 제거");
+        test1.onclick = null; // test1의 이벤트 제거(test1() 실행불가)
+    }
+</script>
+```
+
+### 이벤트 발생 객체
+
+```
+이벤트 발생 객체는 매개변수(e, window.event)로 이벤트 정보를 전달함
+핸들러 내부에서 e.target 또는 this로 이벤트가 발생된 요소 선택 가능
+```
+
+```javascript
+<button id="test">실행확인</button>
+<div id="area"></div>
+<script>
+    var test = document.getElementById("test"); // 이벤트가 발생할 var 선언
+    test.onclick = function(e) {
+        // e : 이벤트가 발생한 객체
+        // window.event : ie8 이전 버전의 e
+        var event = e || window.event;
+
+        console.log(event.target); // <button id="test">실행확인</button>
+        console.log(this); // <button id="test">실행확인</button>
+    }
+</script>
+```
+
+### 인라인 이벤트 모델
+
+```
+요소 내부에 이벤트를 작성하는 방식
+script 태그에 정의된 함수를 호출하는 방식을 사용
+(권장하지 않음 / 소스 관리의 불편함)
+```
+
+```javascript
+<button onclick="test();">Execute</button> // button 요소 내부에 onclick 통해 이벤트 작성
+<script>
+    function test() {
+        console.log("test()가 실행되었습니다.");
+    }
+</script>
+```
+
+### 기본 이벤트 제거
+
+```
+태그에 기본적으로 설정되어 있는 이벤트 제거
+    -> 이벤트 핸들러의 return값을 false로 설정
+```
+
+* 기본 태그에 이벤트가 설정되어 있는 태그
+
+  1. `a` : 클릭하면 다른 페이지로 이동
+  2. `submit` : form 입력양식 제출 후 페이지 새로고침
+
+* submit 기본 이벤트 제거를 통한 패스워드 - 확인 패스워드 입력값 검증 방법
+
+```javascript
+
+<form id="join"> // form 선언
+    <label>비밀번호 : </label><input type="password" name="password" id="password"><br>
+    <label>비밀번호 확인 : </label><input type="password" name="password1" id="password1">
+    <input type="submit" value="제출" onclick="return test();"> // submit의 기본값은 return이므로, 잘못된 값 입력 시 false 값으로 기본 이벤트 제거
+</form>
+<script>
+    function test(){
+        var password = document.getElementById("password").value; // password 입력값
+        var password1 = document.getElementById("password1").value; // password 확인 입력값
+
+        // console log 확인
+        console.log("password : " + password); 
+        console.log("password1 : " + password1);
+
+        // 비밀번호가 같은지 확인
+        if(password == password1) {
+            alert('비밀번호가 일치합니다.');
+        } else {
+            alert('비밀번호가 틀립니다.');
+            document.getElementById("password1").select(); 
+            return false; // submit의 기본 이벤트 제거를 위해 false 리턴
+        }
+    }
+</script>
+```
+
+## 표준 이벤트 모델(addEventListener)
+
+```
+w3에서 공식적으로 지정한 이벤트 모델로, 한번에 여러개의 이벤트 핸들러 설정 가능
+(IE는 9버전부터 지원)
+```
+
+(참고) HTML DOM 이벤트 종류 [(링크)](https://www.w3schools.com/jsref/dom_obj_event.asp)
+표준 이벤트 모델 작성방법
+
+```javascript
+<button id="btn">Execute</button>
+<script>
+    window.onload = function() {
+        var btn = document.getElementById("btn");
+
+        btn.addEventListener('click', function(){ // addEventListener 사용
+            alert('표준 이벤트 모델 테스트');
+        });
+
+        btn.addEventListener('click', function(){
+            btn.style.background = 'red';
+        });
+    }
+</script>
+```
+
+### 이벤트 전달
+
+### 이벤트 버블링
+
+* 자식 노드에서 부모 노드로 이벤트가 전달
+
+```javascript
+<style> // div를 겹칠 수 있도록 style 추가
+    .div-test {
+        border: 1px solid black;
+        padding: 20px;
+    }
+    .div1 {
+        background: red;
+    }
+    .div2 {
+        background: orange;
+    }
+    .div3 {
+        background: yellow;
+    }
+    .div4 {
+        background: green;
+    }
+</style>
+
+/* 이벤트 버블링 */
+<div onclick="test1('1번 div');" class="div-test div1">
+    <div onclick="test1('2번 div');" class="div-test div2">
+        <div onclick="test1('3번 div');" class="div-test div3">
+            <div onclick="test1('4번 div');" class="div-test div4"></div>
+        </div>
+    </div>
+</div>
+<script>
+    // 가운데 있는 4번 div를 클릭하면 4번 div, 3번 div, 2번 div, 1번 div까지 총 4번의 alert 실행됨
+    function test1(msg) {
+        alert(msg);
+    }
+</script>
+
+<hr>
+
+/* 이벤트 버블링 막기 */
+<div onclick="test2(event, '1번 div');" class="div-test div1">
+        <div onclick="test2(event, '2번 div');" class="div-test div2">
+            <div onclick="test2(event, '3번 div');" class="div-test div3">
+                <div onclick="test2(event, '4번 div');" class="div-test div4"></div>
+            </div>
+        </div>
+    </div>
+<script>
+    function test2(e, msg) {
+        var event = e || window.event;
+
+        alert(msg);
+
+        // 이벤트 버블링을 막음
+        // ie 제외
+        event.stopPropagation();
+
+        // ie8 전용(9 이전)
+        event.cancelBubble = true;
+    }
+</script>
+```
+
+## 정규표현식(Regular Expression)
+
+특정한 규칙을 가진 문자열의 집합을 표현하는 데에 사용하는 형식 언어.
+정규표현식을 이용하면 입력된 문자열에 대하여 특정 조건검색, 치환 시 복잡한 조건문 대신 간단하게 처리 가능
+ex) 회원가입 시 입력 유효성 확인 등
+
+### 정규표현식의 객체 생성
+
+* 주요 메소드
+
+```
+test() : 문자열에서 정규식 변수의 값과 일치하는 값이 있으면 true / 없으면 false
+exec() : 문자열에서 정규식 변수의 값과 일치하는 값이 있으면 처음으로 매치된 문자열 반환
+match() : 문자열에서 정규식 변수의 값과 일치하는 모든 값 반환
+replace() : 문자열에서 정규식 변수의 값과 일치하는 부분을 새로운 값으로 변경
+search() : 일치하는 부분의 시작 인덱스 반환
+split() : 정규식 변수에 지정된 값을 구분자로 하여 배열 생성
+```
+
+```javascript
+<script>
+    function test() {
+        // 정규식 변수를 선언(검색 조건으로 삼을 문자열 선언)방법 2가지
+        // 1. var regExp = new RegExp('script');
+        var regExp = /script/; // 정규식 리터럴 양쪽에 '/' 붙이기
+
+        var str = 'javascript jquery ajax';
+
+        console.log(regExp.test(str)); // true
+        console.log(regExp.exec(str)); // script
+
+        // 정규 표현식의 메소드를 직접 사용하기보다 string 메소드를 사용하는 것이 일반적
+        console.log(str.match(regExp)); // script
+        console.log(str.replace(regExp, '스크립트')); // java스크립트 jquery ajax
+        console.log(str.search(regExp)); // 4
+        console.log(str.split(regExp)); // java, jquery ajax
+    }
+</script>
+```
+
+* 메타 문자를 이용한 문자 검색/치환
+
+특정 메타문자를 사용하여 문자열에 정규식이 존재하는지
+`test()`를 이용해 검사하거나, `replace()`를 이용하여 치환
+
+```javascript
+<script>
+    function test2() {
+        var str = "javascript jquery ajax";
+
+        var regExp = /a/; // 메타문자 없음 : 일치하는 값 의미
+        // 문자열에서 정규식과 일치하는 값이 있는지 검사
+        console.log("/a/ : " + regExp.test(str)); // true
+        // 문자열에서 정규식과 일치하는 값들 중 첫번째 값 대체
+        console.log("/a/ : " + str.replace(regExp, '(*)')); // j(*)vascript jquery ajax
+
+        regExp = /^j/; // ^ : 시작을 의미 -> j로 시작하는
+        console.log("/^j/ : " + regExp.test(str)); // true
+        console.log("/^j/ : " + str.replace(regExp, '(*)')); // (*)avascript jquery ajax
+
+        regExp = /[ab]/; // [] : [] 내의 문자 중 하나라도 존재할 경우
+        console.log("/[ab]/ : " + regExp.test(str)); // true
+        // a 또는 b가 문자열에 있을 경우 첫번째 값 대체
+        console.log("/[ab]/ : " + str.replace(regExp, '(*)')); // j(*)vascript jquery ajax
+
+        regExp = /^[js]/; // 시작이 j 또는 s일때
+        console.log("/^[js]/ : " + str.replace(regExp, '(*)')); // (*)avascript jquery ajax
+
+        regExp = /x$/; // $ : 끝을 의미 -> 끝이 x로 끝날 때
+        console.log("/x$/ : " + str.replace(regExp, '(*)')); // javascript jquery aja(***)
+
+        // . : 개행문자를 제외한 모든 문자
+        // + : 한 글자 이상
+        regExp = /^j.+x$/; // j로 시작하고 x로 끝나면 문자열 전체 대체(중간 글자수 제한x)
+        console.log("/^j.+x$/ : " + str.replace(regExp, '(*)')); // (*)
+
+        regExp = /^[0-9]+$/; // 숫자만 입력한 경우 대체
+        // 시작(^)부터 1글자 이상(+) 끝까지 [0~9]일 때를 의미
+        console.log("/^[0-9]+$/ : " + ("12345").replace(regExp, '(*)')); // (*)
+
+        regExp = /^[a-zA-Z]+$/; // 영어 대/소문자만 입력한 경우 대체
+        // 시작(^)부터 a-z 또는 A-Z인지 끝($)까지 검사
+        console.log("/^[a-zA-Z]+$/ : " + "Javascript".replace(regExp, '(*)')); // (*)
+
+        regExp = /^[a-zA-Z0-9]+$/; // 영어 대/소문자 + 숫자만 입력하면 대체
+        // 시작(^)부터 a-z 또는 A-Z 또는 0-9인지 끝($)까지 검사
+        console.log("/^[a-zA-Z0-9]+$/ : " + "Javascript123".replace(regExp, '(*)')); // (*)
+
+        regExp = /^[ㄱ-ㅎㅏ-ㅣ가-힣]+$/; // 한글만 입력하면 대체
+        console.log("/^[ㄱ-ㅎㅏ-ㅣ가-힣]+$/ : " + "안녕".replace(regExp, '(*)')); // (*)
+
+        regExp = /^[ㄱ-ㅎㅏ-ㅣ가-힣0-9]+$/; // 한글 또는 숫자만 입력하면 대체
+        console.log("/^[ㄱ-ㅎㅏ-ㅣ가-힣0-9]+$/ : " + "안녕572".replace(regExp, '(*)')); // (*)
+    }
+</script>
+```
+
+### 플래그 문자
+
+* g : 전역비교를 수행
+* i : 대소문자를 가리지 않고 비교
+* m : 여러 줄의 검사를 수행
+
+```javascript
+<script>
+    function test1() {
+        var regExp = /a/ig; // a라는 문자를, 대소문자 가리지 않고 전체에 대해 해당하는 값 의미
+        var str = "Javascript Jquery Ajax";
+
+        // $& : 대체 문자열에 일치하는 전체 문자열의 복사본을 포함  
+        console.log(str.replace(regExp, '($&)')); // J(a)v(a)script Jquery (A)j(a)x
+    }
+
+    function test2() {
+        var regExp = /^j/gi; // j라는 문자로 시작하는 문자를 대소문자 가리지 않고 전체에서 해당하는 값
+        var regExp2 = /ipt$/gim; // ipt로 끝나는 문자를 대소문자 가리지 않고 모두 찾으며, 모든 줄을 검색하는 값
+
+        var str = "Javascript\nJquery\nAjax"; // \n으로 띄어쓰기 포함
+        var str2 = "Javascript\nJquery\nAjax";
+
+        console.log("/^j/gi : " + str.replace(regExp, "($&)")); // /^j/gi : (J)avascript \n Jquery \n Ajax
+
+        console.log("/ipt$/gim : " + str2.replace(regExp2, "($&)")); // /ipt$/gim : Javascr(ipt) \n Jquery \n Ajax
+    }
+</script>
+```
+
+* 추가 메타 문자
+  * \d : 숫자
+  * \w : 아무 단어(숫자 포함)
+  * \s : 공백 문자(탭, 띄어쓰기, 줄바꿈)
+  * \D : 숫자 아님
+  * \W : 아무 단어 아님
+  * \S : 공백 문자 아님
+
+* 수량 문자
+  * a+ : a가 적어도 1개 이상
+  * a* : a가 0개 또는 여러개
+  * a? : a가 0개 또는 1개
+  * a{5} : a가 5개
+  * a{2,5} : a가 2~5개
+  * a{2, } : a가 2개 이상
+  * a{ ,2} : a가 2개 이하
+
+```javascript
+<script>
+    <input type="text" id="pnoVal"></input>
+    <button type="submit" onclick="test();">ValCheck</button>
+    function test(){
+        var regExp = /^\d{2}(0[1-9]|1[0-2])(0[1-9]|[1-2][0-9]|3[0-1])-[1234]\d{6}$/;
+        // 1,2번자리(출생년도) : \d{2} : 숫자 2개가 들어가고
+        // 3,4번자리(월) : (0[1-9]|1[0-2]) : 3번째 자리에 0이 들어가면 4번째는 1-9 / 1이 들어가면 4번째는 0-2
+        // 5,6번자리(일) : (0[1-9]|[1-2][0-9]|3[0-1]) : 최대 31까지만 입력을 받도록
+        // 7번자리 - 
+        // 8번자리(남녀) : [1234] : 1,2,3,4만 받을 수 있도록
+        // 9~15번자리 : \d{6}$ : 숫자 6자리가 오고 끝나도록
+        var pNo = document.getElementById("pnoVal").value;
+
+        if(regExp.test(pNo)) {
+            alert('맞는 주민번호입니다.');
+        } else {
+            alert('틀린 주민번호입니다.');
+        }
     }
 </script>
 ```
