@@ -1,5 +1,23 @@
 # Javascript
 
+- ## **[함수(Function)](#함수(Function))**
+
+  - [작성방법](##작성방법)
+  - [함수의 매개변수](##함수의&nbsp;매개변수(전달인자))
+  - 
+
+- ## **[객체(Object)](##객체)**
+
+  - [객체 선언 및 호출](###객체&nbsp;선언&nbsp;및&nbsp;호출)
+
+- ## **[내장객체](##내장&nbsp;객체)**
+
+- ## **[BOM(Browser Object Model)](##BOM(Browser&nbsp;Object&nbsp;Model))**
+
+- ## **[정규표현식(Regular Expression)](##정규표현식(Regular&nbsp;Expression))**
+
+***
+
 # 함수(Function)
 
 ## 작성방법
@@ -1484,3 +1502,109 @@ split() : 정규식 변수에 지정된 값을 구분자로 하여 배열 생성
 </script>
 ```
 
+### 유효성 검사
+
+정규 표현식을 활용하여 입력받은 value의 유효성 검사에 활용할 수 있다.
+
+- text로 받은 두 숫자의 합을 구하는 검사
+
+```javascript
+<input type="button" value="계산하기" onclick="execute();">
+<input type="text" id="a"> +
+<input type="text" id="b"> =
+<span id="result"></span>
+<script>
+    function execute(){
+        /// a와 b의 결과를 합쳐서 result에 보여주기
+        var a = document.getElementById('a');
+        var b = document.getElementById('b');
+
+        var re = /^[0-9]+$/; // 정규식을 이용한 숫자 입력여부 검사
+        if(!re.test(a.value)){ // 입력받은 value가 정규식을 통과하지 못할 경우
+            alert('숫자만 넣으셔야 합니다.'); 
+            a.value = "";
+            a.focus();
+            return;
+        }
+        var result = Number(a.value) + Number(b.value);
+
+        if(isNaN(result)){ // 결과값이 NaN인 경우(a는 유효성 검사가 끝났으므로, b가 Number가 아닌경우)
+            result = "숫자를 넣어주세요.";
+        }
+        document.getElementById("result").innerHTML = result;
+        console.log(result); // 
+</script>
+```
+
+- 회원가입 폼을 작성하여, 각각 입력되는 value에 대하여 기준을 가지고 유효성 검사
+
+```javascript
+<script>
+function validate() {
+            var id = document.getElementById("userid");
+            var pass = document.getElementById("pass");
+            var pass1 = document.getElementById("pass1");
+            var name = document.getElementById("name");
+            var email = document.getElementById("email");
+            var tel1 = document.getElementById("tel1");
+            var tel2 = document.getElementById("tel2");
+            var tel3 = document.getElementById("tel3");
+
+        // 아이디 검사
+        // 첫글자는 영문 소문자로 시작, 숫자가 반드시 하나 이상 포함된(영문 소문자와 숫자로만 이루어짐) 4~12자 사이
+        if(!chk(/^[a-z][a-z\d]{3,11}$/, id, "첫글자는 영문 소문자, 4~12자 사이로 입력"))    
+            return false;
+        if(!chk(/[0-9]/, id, "숫자 하나 이상 포함"))
+            return false;
+
+        // 비밀번호 유효성 검사
+        // 대소문자 하나 이상씩, 숫자도 하나 이상, 특수문자 하나 이상 길이 8 이상
+        if(!chk(/(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^a-zA-Z0-9가-힣]).{8,}/, pass, "영문 대소문자, 숫자, 특수문자 1개 이상 포함"))
+            return false;
+
+        // 비밀번호 확인 일치여부
+        if(pass.value != pass1.value) {
+            alert("비밀번호 확인내용이 같지 않습니다.");
+            return false;
+        } 
+
+        // 이름 검사
+        // 2글자 이상, 한글만
+        if(!chk(/^[가-힣]{2,}$/, name, "한글로 2글자 이상 입력해주세요"))
+            return false;
+
+        // 이메일 검사
+        // 4글자 이상 @ 1글자 이상 . 글자1~3글자
+
+        if(!chk(/^[\w]{4,}@[\w]+\.[\w]+{1,3}$/, email, "이메일을 알맞게 입력해주세요"))
+            return false;
+
+        // 전화번호 검사(휴대폰 번호)
+        // 앞자리 3자리(휴대폰에서 가능한 앞자리)
+        // 두번째 자리 3-4자리
+        // 마지막 자리 4자리
+
+        if(!chk(/^01[016789]$/, tel1, "전화번호를 다시 입력하세요."))
+            return false;
+
+        if(!chk(/^[1-9]\d{2,}$/, tel2, "전화번호를 다시 입력하세요."))
+            return false;
+
+        if(!chk(/^\d{4}$/, tel3, "전화번호를 다시 입력하세요."))
+            return false;
+
+        }
+        // 입력받은 값을 확인하는 function으로,
+        // 유효성 검사에 통과하지 못한 경우 위 if절에서 입력한 문구를 alert 형태로 출력하며,
+        // 동시에 form 태그의 submit을 막도록 함
+        function chk(re, e, msg) { 
+            if(re.test(e.value)) {
+                return true;
+            } 
+            alert(msg);
+            e.value = "";
+            e.focus();
+            return false;
+        }
+</script>
+```

@@ -15,7 +15,8 @@ It's a bootcamp for beginner that makes us full-stack programmer.
 
    * HTML
    * CSS
-   * [Javascript](/webfront/Javascript.md) <-- On process
+   * [Javascript](/webfront/Javascript.md)
+   * [jQuery](/webfront/jQuery.md) <-- On process
 
 4. JDBC / JSP
 
