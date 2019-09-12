@@ -18,9 +18,277 @@
 
 ***
 
-# 함수(Function)
+## 개요
 
-## 작성방법
+### 스크립트 언어란?
+
+기본 프로그램의 동작을 사용자의 요구에 맞게 수행되도록 해주는 용도로 사용.
+매우 빠르게 배우고 짧은 소스코드 파일로 상호작용하도록 고안됨
+
+그 중, *자바스크립트(Javascript)*는 웹 브라우저에서 많이 사용하는 인터프리터 방식의 객체지향 프로그래밍 언어로, ECMA 스크립트 표준을 따르는 대표적인 웹 기술이다.
+
+### 자바스크립트 작성 방법
+
+소스는 함수 단위로 작성하고, 이벤트 속성을 사용해서 구동되게 한다.
+이벤트 속성은 태그마다 차이 있음.
+`on이벤트명="실행할 함수명([전달값])"`
+
+#### 인라인 방식(inline)
+
+태그에 직접 간단소스코드를 작성해서 실행되게 하는 방법
+
+```javascript
+<button onclick="window.alert('경고창 Open!');">경고창 띄우기</button>
+<button onclick="console.log('Console.log 출력!');">console 창에 출력</button>
+<h4 onmouseover="this.style.backgroundColor='red'">마우스 오버</h4>
+```
+
+#### 내부실행 방식(internal)
+
+script 태그 영역에 작성하여 실행하는 방법으로, *head태그, body태그*에 작성 가능
+
+```javascript
+<button onclick="testfn();">실행 확인버튼</button>
+<script type="text/javascript"> // type="text/javascript" : 기본값
+    // 자바스크립트 주석 타입 : "//"
+    // 함수 작성시에는 함수명 앞에 반환자료형(return type)
+    // -> 자바스크립트는 자료형이 없음
+    function testfn(){
+        alert('testfn() 실행 확인'); // 알림 팝업창 실행됨
+    }
+</script>
+```
+
+#### 외부실행 방식(external)
+
+별도의 js파일로 작성해서 가져다 사용하는 방법
+
+```javascript
+<head>
+...
+<script src="js/sample.js"></script> // 헤드 영역에 해당되는 js파일 링크
+</head>
+```
+
+## 데이터 입출력(IO)
+
+### 출력(Output)
+
+#### `document.write()` : HTML에 해당 내용으로 모두 반영됨
+
+```javascript
+<script type="text/javascript">
+    // body 부분에 작성된 script 태그의 내용이
+    // function으로 감싸져 있지 않으면 html 로딩과정에서 실행됨.
+    document.write("document.write() 로 출력한 내용");
+    alert("출력 문구를 실행하였습니다.");
+</script>
+// -> 별도의 function으로 감싸져 있지 않으므로 HTML 열면 바로 실행됨
+<br>
+
+<button onclick="writefn();">출력</button> // 버튼 클릭 시 document.write 내 내용으로 모두 변경
+<script>
+    function writefn(){ 
+        document.write("HTML문서가 완전히 로드된 후 호출 시 " + "기존 HTML 내용을 모두 삭제");
+    }
+</script>
+```
+
+#### `innerHTML` 활용한 요소의 내용 변경
+
+Javascript에서 Tag Element의 값을 읽거나, 변경할 때 innerHTML 속성 사용
+
+```javascript
+<div id="area1">Hello, World!</div> 
+<button onclick="checkValue();">innerHTML 확인</button>
+<script>
+    function checkValue() {
+        var divEl = document.getElementById("area1"); // 아이디를 기용하여 요소 선택 후 값 읽어오기
+
+        alert(divEl.innerHTML); // 읽어온 요소값 경고창으로 출력('Hello, World!')
+
+        divEl.innerHTML = "innerHTML 속성으로 값 변경";
+    }
+</script>
+```
+
+#### `console.log()` : 개발자 도구 Console화면에 출력
+
+개발자 도구 콘솔화면에 출력할 때 사용하며, 내부적으로 정상적으로 구현하는지 확인하는 디버깅 등에 사용됨
+(HTML 화면에 나오는 것이 아님!)
+
+```javascript
+<script>
+    function printConsole(){
+        console.log('콘솔 화면에 출력하기'); // 개발자 도구의 console에 해당 내용 확인가능
+    }
+</script>
+```
+
+### 입력(Input)
+
+#### `window.confirm()` : 질문에 대한 예/아니오 결과를 얻을 때 사용(확인:true / 취소:false)
+
+```javascript
+<script>
+    function checkHungry(){
+        var result = confirm("If you feel Hungry, click OK or if not, click cancel");
+        // 콘솔에서 리턴 값 확인
+        console.log(result); // true or false
+
+        var str = ""; // 문자열을 저장할 비어있는 변수 선언
+        if(result){
+            str = "Yes, I'm hungry";
+        }else{
+            str = "No, I'm OK!";
+        } 
+        console.log(str); // 입력받은 값을 if문을 통해 변수로 받을 수도 있다. 
+    }
+</script>
+```
+
+#### `window.prompt()` : 텍스트 필드와 확인/취소 버튼이 있는 대화상자를 출력하고, 입력한 메시지 내용을 리턴값 반환
+
+```javascript
+<script>
+    function testPrompt() {
+        var result = window.prompt("What's your name?"); // 프롬프트창에 입력한 값을 result로 받음
+        console.log("Oh, you're " + result + "!"); // Oh, you're + 입력한 값 + !
+    }
+</script>
+```
+
+### HTML 태그 접근
+
+#### 1. 아이디로 접근 `getElementById("id")`
+
+```javascript
+<div id="area1" class="area"></div>
+<div id="area2" class="area"></div>
+<script>
+    function accessId() {
+        var area1 = document.getElementById("area1"); // id="area1" 인 div 영역 변수 담기
+        area1.style.backgroundColor = "yellow"; // id 영역 Style 변경
+    }
+    function accessId2() { // accessId2() 실행시마다 backgroundColor 변경 yellow <-> red
+        var bgColor = area2.style.backgroundColor;
+
+        if(bgColor == "red") {
+            area2.style.backgroundColor = "yellow";
+        }else{
+            area2.style.backgroundColor = "red";
+        }
+    }
+</script>
+```
+
+#### 2. 태그명으로 접근 `getElementsByTagName("태그명")`
+
+```javascript
+<ul>
+    <li>list1</li>
+    <li>list2</li>
+    <li>list3</li>
+    <li>list4</li>
+    <li>list5</li>
+</ul>
+<button onclick="accessTagName();">태그명으로 접근</button>
+<script>
+    function accessTagName() {
+        var list = document.getElementsByTagName("li"); // 문서 내의 모든 li 태그들의 정보들을 읽어와 배열 형식으로 저장
+        console.log("전달받은 li 태그의 갯수 : " + list.length) // 5
+        
+        // 배경값을 rgb로 지정하며, b값을 50씩 변경하며 목록 list에 그라데이션 효과를 반영하기
+        var changeColor = 50;
+        for(var i = 0; i < list.length; i++) { 
+            console.log(list[i]);
+            list[i].style.backgroundColor = "rgb(130,220," + changeColor + ")";
+            changeColor += 50;
+        }
+    }
+</script>
+```
+
+#### name으로 접근 `getElementsByName("name")`
+
+```javascript
+// checkbox type의 form 작성(name='hobby')
+<form>
+    <fieldset>
+        <legend>hobby</legend>
+        <table>
+            <tr>
+                <td><input type="checkbox" name="hobby" value="game" id="game"><label for="game">Playing game</label></td>
+                <td><input type="checkbox" name="hobby" value="music" id="music"><label for="music">Listen to Music</label></td>
+                <td><input type="checkbox" name="hobby" value="movie" id="movie"><label for="movie">Watching Movies</label></td>
+            </tr>
+            <tr>
+                <td><input type="checkbox" name="hobby" value="book" id="book"><label for="book">Reading books</label></td>
+                <td><input type="checkbox" name="hobby" value="travel" id="travel"><label for="travel">Travel</label></td>
+                <td><input type="checkbox" name="hobby" value="exercise" id="exercise"><label for="exercise">Exercise</label></td>
+            </tr>
+        </table>
+    </fieldset>
+</form>
+<div id="area" class="area"></div>
+<button onclick="accessName();">name으로 접근</button>
+<script>
+    function accessName() {
+        var hobby = document.getElementsByName("hobby"); // 'hobby' name을 hobby 변수에 담음
+
+        console.log("hobby의 길이 : " + hobby.length); // 6(모든 name='hobby'인 변수가 배열로 담김)
+
+        // checkbox의 checked여부를 확인해서 checkItem에 담기 가능
+        var checkItem = "";
+        for(var i in hobby) { // aree
+            if(hobby[i].checked == true) {
+                checkItem += hobby[i].value + "selected <br>";
+            }
+        }
+        console.log(checkItem); // 체크가 되어있는 hobby 값들에 대해 '... selected' 형태로 확인
+    }
+</script>
+```
+
+#### input type = "text"의 값 읽어오기(`value` 사용)
+
+```javascript
+<form>
+    name : <input type="text" name="username" id="username">
+    <br>
+    <input type="button" onclick="readValue();" value="Check inputValue">
+</form>
+<script>
+    function readValue(){
+        var input = document.getElementById("username");
+        if(input.value == "" || input.value.length == 0){ // 입력이 안된 경우
+            alert("이름을 입력하세요");
+            input.focus();
+        }else{
+            console.log(username.value); // 입력된 text를 가져오고 싶을 경우 '.value' 사용
+        }
+    }
+</script>
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## 함수(Function)
+
+### 작성방법
 
 * `function name(){ source code } }` : 선언함수
 
@@ -64,7 +332,7 @@
 
 -> html 문서를 열면 바로 자동으로 실행됨
 
-## 함수의 매개변수(전달인자)
+### 함수의 매개변수(전달인자)
 
 ```javascript
 <button onclick="function();">Execute</button>
@@ -92,7 +360,7 @@ function(){
 
 -> 'prompt에 입력한 value값', '안녕하세요', 'undefined' 실행
 
-## 함수의 return 처리
+### 함수의 return 처리
 
 ```javascript
 <button onclick="test();">Execute</button>
@@ -109,7 +377,7 @@ function(){
 
 -> test() 함수의 returnFunction()를 위해, 위의 returnFunction()을 실행한 return값 보여줌
 
-## 가변인자 함수 테스트
+### 가변인자 함수 테스트
 
 가변인자 함수 : 매개변수의 개수가 변하는 함수.
 함수 내부에 _arguments_ 라는 Object가 자동으로 생성
