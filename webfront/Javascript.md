@@ -1,20 +1,25 @@
 # Javascript
 
-- ## **[함수(Function)](#함수(Function))**
+- ## **[개요](##-개요)**
 
-  - [작성방법](##작성방법)
-  - [함수의 매개변수](##함수의&nbsp;매개변수(전달인자))
-  - 
+- ## **[데이터 입출력(IO)](##-데이터-입출력(IO))**
 
-- ## **[객체(Object)](##객체)**
+- ## **[배열(Array)](##-배열)**
 
-  - [객체 선언 및 호출](###객체&nbsp;선언&nbsp;및&nbsp;호출)
+- ## **[함수(Function)](##-함수(function))**
 
-- ## **[내장객체](##내장&nbsp;객체)**
+  - [작성방법](##-작성방법)
+  - [함수의 매개변수](##-함수의-매개변수(전달인자))
 
-- ## **[BOM(Browser Object Model)](##BOM(Browser&nbsp;Object&nbsp;Model))**
+- ## **[객체(Object)](##-객체)**
 
-- ## **[정규표현식(Regular Expression)](##정규표현식(Regular&nbsp;Expression))**
+  - [객체 선언 및 호출](###-객체-선언-및-호출)
+
+- ## **[내장객체](##-내장-객체)**
+
+- ## **[BOM(Browser Object Model)](##-BOM(Browser-Object-Model))**
+
+- ## **[정규표현식(Regular Expression)](##-정규표현식(Regular-Expression))**
 
 ***
 
@@ -271,20 +276,485 @@ Javascript에서 Tag Element의 값을 읽거나, 변경할 때 innerHTML 속성
 </script>
 ```
 
+### 변수 & 자료형
 
+#### 전역변수와 지역변수
 
+```javascript
+<script>
+    // 전역 변수의 선언
+    str = '전역변수'; // 자동으로 window 객체의 필드가 됨
 
+    // 함수 외부에 선언한 변수는 var를 붙여도 전역 변수
+    var str2 = '전역변수';
 
+    window.onload = function(){  // window.onload : 페이지가 로드 된 직후 실행하는 함수를 지정
+        var str = '지역변수';  // 지역 변수 선언
+        // -> 지역 변수 앞에는 var를 붙인다.
 
+        var str3 = '새로운 지역변수';
 
+        str4 = "새로운 전역변수";
 
+        // 전역 변수를 호출할 때 this. 혹은 window.을 붙일 수 있다.
+        console.log("str 호출");
+        console.log(str); // 지역변수
+        console.log(this.str); // 전역변수
+        console.log(window.str); // 전역변수
 
+        console.log("str2 호출");
+        console.log(str2); // 전역변수
+        console.log(this.str2); // 전역변수
+        console.log(window.str2); // 전역변수
 
+        // 지역변수에 this. 혹은 window.을 사용하지 못한다.
+        console.log("str3 호출");
+        console.log(str3); // 새로운 지역변수
+        console.log(this.str3); // undefined
+        console.log(window.str3); // undifined
 
+        console.log("str4 호출");
+        console.log(str4); // 새로운 전역변수
+        console.log(this.str4); // 새로운 전역변수
+        console.log(window.str4); // 새로운 전역변수
 
+        // 함수 안에 작성되어도 var를 사용하지 않으면 전역 변수가 된다.
+        showStr4();
 
+    }
 
+    function showStr4(){
+        console.log("str4 전역변수 확인");
+        console.log(str4); // 새로운 전역변수
+        console.log(this.str4); // 새로운 전역변수
+        console.log(window.str4); // 새로운 전역변수
+    }
+</script>
+```
 
+#### `window` 객체
+
+웹 브라우저에서 제공하는 창(window) 자체를 나타내는 객체
+
+```
+<script>
+    변수명; // 전역 변수(global)
+
+    var 변수명; // 전역 변수(global)
+
+    function 함수명(){
+        변수명; // 전역 변수(global)
+
+        var 변수명; // 지역 변수(local)
+    }
+</script>
+```
+
+#### 전역변수명과 지역변수명이 같을 때
+
+함수 내부에서 변수명을 호출하면 **지역변수가 우선권**을 가짐.
+전역 변수 사용 시 `this.변수명` 또는 `window.변수명`으로 사용하여 지역 변수와 구분.
+
+#### 자료형
+
+Javascript는 변수의 자료형을 별도로 지정하지 않음
+> -> 변수에 저장되는 값(리터럴)에 의해 자료형이 결정됨.
+
+```javascript
+// javascript의 자료형
+<ul>
+    <li>String(문자열)</li>
+    <li>Number(숫자열)</li>
+    <li>Boolean(논리값)</li>
+    <li>Object(객체)</li>
+    <li>Function(함수)</li>
+    <li>Undefined(초기값이 없는 변수)</li>
+</ul>
+
+<button onclick="typeTest();">자료형 테스트</button>
+<br>
+<script type="text/javascript">
+    function typeTest(){
+        // // typeof : 값의 자료형을 확인하는 연산자 를 통해 해당 변수의 타입 확인가능
+        var name = '홍길동'; // String
+        var age = 20; // Number
+        var check = true; // Boolean
+        var hobby = ['영화', '음악','낮잠']; // Object
+        var user = { // Function
+                        name : "홍길동",
+                        age : 20,
+                        id : 'user1'
+                    }
+        var testFuntion = function testFuntion(num1, num2){ // function
+                                var sum = num1 + num2;
+                                alert(sum);
+                            };
+        var noVal; // undefined
+
+        // undefined와 null의 차이점
+        // - undefined : 변수 생성 시 초기값이 없는 상태
+        // - null : 의도적으로 변수가 참조하고 있는 값이 없다는 걸 알리는 상태
+    }
+</script>
+```
+
+### 문자열 / 숫자
+
+#### 문자열(String)
+
+" " 또는 ' ' 로 묶어 있는 리터럴. String이라는 자바스크립트 내장객체가 존재하며, 문자열과 관련된 기본적인 메소드(함수)를 제공함
+
+* 문자열 관련 메소드
+
+```javascript
+<script>
+function stringMethod() {
+    var str = "Hello World";
+
+    console.log(str.toUpperCase()); // HELLO WORLD
+    console.log(str.toLowerCase()); // hello world
+    console.log(str.length()); // 11
+    console.log(str.indexOf("l")); // 2 (맨 처음 나온 l의 위치)
+    console.log(str.lastIndexOf("l")); // 9 (맨 뒤에 나온 l의 위치) 
+    for(var i = 0; i < str.length; i++) {
+        console.log(i + "번째 인덱스 " : str.charAt(i)); // 0번째 인덱스 : H,,,,, 
+    }
+    console.log(str.substring(6, str.length)); // World
+
+    var strForSplit = "Java, Jquery, React";
+    var lang = strForSplit(", "); // ", " 기준으로 자르기
+    console.log(lang); // length 3의 배열
+}
+</script>
+```
+
+#### 숫자(Number)
+
+정수, 부동소수점, Infinity, NaN 리터럴.
+Math라는 자바스크립트 내장 객체가 존재하며, 수학과 관련된 기본적인 메소드를 제공
+
+* 숫자 처리 메소드
+
+```
+<script>
+function showMathMethod(){
+    var num = -123;
+
+    console.log(Math.abs(num)); // 123
+    console.log(Math.random()); // 0~1 사이의 임의의 랜덤값 발생
+    console.log(Math.round(572.572)); // 573 --> 반올림
+    console.log(Math.floor(572.572)); // 572 --> 내림
+    console.log(Math.ceil(572.572)); // 573 --> 올림
+    }
+</script>
+```
+
+### 데이터 형변환
+
+#### 문자열(String)과 숫자(Number)의 '+' 연산
+
+> 문자열 + 숫자 = 문자열
+> 숫자 + 숫자 + 문자열 = 숫자가 먼저 계산되고 뒤의 문자열과 합쳐짐
+
+```javascript
+<script>
+    function testPlus() {
+        console.log(7 + 7); // 14
+        console.log(7 + "7"); // 77
+        console.log("7" + 7); // 77
+        console.log("7" + "7"); // 77
+        console.log(7 + 7 + "7"); // 147
+        console.log(7 + "7" + 7); // 777
+        console.log("7" + 7 + 7); // 777
+        console.log("7" + (7 + 7)); // 714
+    }
+</script>
+```
+
+#### 강제 형변환
+
+자바스크립트에서는 문자열 -> 숫자형 변환 시 
+`Number()` 내장객체 또는 `parseInt()`, `parseFloat()` 내장함수를 이용하여 강제형변환
+
+```javascript
+<script>
+    function castingTest() {
+        var iNum = 2;
+        var sNum = "3"; // String
+        var fNum = "1.234"; // String
+
+        console.log(iNum + sNum); // 23 
+        consolg.log(iNum + Number(sNum)); // 5
+        consolg.log(iNum + parseInt(sNum)); // 5
+        consolg.log(iNum + parseFloat(sNum)); // 5
+
+        consolg.log(iNum + fNum); // 21.234
+        consolg.log(iNum + Number(fNum)); // 3.234
+        consolg.log(iNum + parseInt(fNum)); // 3
+        consolg.log(iNum + parseFloat(fNum)); // 3.234
+    }
+</script>
+```
+
+### 연산자
+
+- 동등 연산자(==, !=)
+자료형에 **상관없이** 값이 일치하면 true, 아니면 false
+
+- 일치 연산자(===, !==)
+자료형과 값이 **모두** 일치하면 true, 아니면 false
+
+```javascript
+
+<script>
+    function opTest1() {
+        var num = 1;
+        var str1 = "1";
+        var boolT = true;
+        var strT = 'true';
+
+        var num0 = 0;
+        var str0 = "0";
+        var str = "";
+
+        var nullVal = null;
+        var unDef = undefined;
+
+        // 동등 연산자 테스트
+        console.log('1 == 1 : ' + (num == 1)); // true
+        console.log('1 == "1" : ' + (num == str1)); // true
+        console.log('1 == true : ' + (num == boolT)); // true(Boolean true의 값 = 1)
+        console.log('1 == "true" : ' + (num == strT)); // false
+
+        console.log('0 == "0" : ' + (num0 == str0)); // true
+        console.log('0 == "" : ' + (num0 == str)); // true
+        console.log('"0" == "" : ' + (str0 == str)); // false
+        console.log('null == undefined : ' + (nullVal == unDef)); // true 
+
+        // 일치 연산자 테스트
+        console.log('1 === 1 : ' + (num === 1)); // true
+        console.log('1 === "1" : ' + (num === str1)); // false
+        console.log('1 === true : ' + (num === boolT)); // false
+        console.log('1 === "true" : ' + (num === strT)); // false
+
+        console.log('0 === "0" : ' + (num0 === str0)); // false
+        console.log('0 === "" : ' + (num0 === str)); // false
+        console.log('"0" === "" : ' + (str0 === str)); // false
+
+        console.log('null === undefined : ' + (nullVal === unDef)); // false
+    }
+</script>
+```
+
+## 배열
+
+### Javascript에서 배열이란?
+
+자바스크립트에서는 별도의 자료형 지정이 없기 때문에 모든 자료형을 보관하는 변수의 모음을 배열로 처리함
+`Java의 Collection`과 유사하다.
+
+```javascript
+<script>
+    // 기본 배열 정의
+    function arrayTest1(){
+        var arr1 = ['홍길동', 20, true, [1, 2, 3, 4]]; // 배열 정의
+        console.log(arr1); // Array(4) 형태의 배열
+    }
+</script>
+```
+
+### 배열의 선언
+
+배열 선언 시 배열의 크기를 정하거나, 정하지 않고 선언할 수 있다.
+
+```javascript
+<script>
+    function arrayTest2(){
+        var arr1 = new Array(); // 크기를 지정하지 않은 선언
+        var arr2 = new Array(3);
+
+        console.log(arr1);
+        console.log(arr2);
+
+        // 배열에 값 대입
+        arr1[0] = 'a';
+        arr1[1] = 'b';
+        arr1[2] = 'c';
+        arr1[3] = 'd';
+        console.log(arr1); // length: 4의 배열
+
+        arr2[0] = "ㄱ";
+        arr2[1] = "ㄴ";
+        arr2[2] = "ㄷ";
+        arr2[3] = "ㄹ";
+
+        console.log(arr2); // length: 4의 배열 --> 선언한 크기보다 더 들어오면 그에 따라 크기 늘림
+
+        // new 연산자를 활용한 초기화
+        var arr3 = new Array('a', 'b', 'c');
+        console.log(arr3); // length: 3의 배열
+
+        var arr4 = ['java', 'oracle', 'html5', 'css', 'javascript'];
+        console.log(arr4); // length: 5의 배열
+    }
+</script>
+```
+
+### 배열 객체의 메소드
+
+배열도 하나의 객체이기 때문에 배열에서 활용할 수 있는 메소드가 있음
+    
+- `indexOf()` : 배열에서 요소가 위치한 인덱스를 리턴
+
+```javascript
+<script>
+    function methodTest1() {
+        var arr1 = ['사과', '딸기', '바나나', '복숭아', '키위', '파인애플', '토마토'];
+        console.log(arr1.indexOf('바나나')); // 2
+    }
+</script>
+```
+
+- `concat(배열명)` : 두개 또는 세개의 배열을 결합
+
+```javascript
+<script>
+    function methodTest2() {
+        var arr1 = ['5', '7', '2'];
+        var arr2 = ['4', '8', '6'];
+        var arr3 = arr1.concat(arr2); console.log(arr3); // 5,7,2,4,8,6 --> arr1을 기준으로 arr2 합침
+        console.log(arr2.concat(arr1)); // 4,8,6,5,7,2 --> arr2를 기준으로 arr1 합침
+        var arr4 = arr2.concat(arr1, arr3); console.log(arr4); // 4,8,5,5,7,2,5,7,2,4,8,6 --> 전달인자가 하나더 있어도 됨
+    }
+</script>
+```
+
+- `toString()`, `join()` : 배열을 결합하여 문자열로 변환
+`toString()`은 배열을 문자열로 합칠 때 요소 사이에 `,`(콤마)를 추가하여 합침
+`join()`도 기본적으로 `toString()`과 같지만 매개변수로 구분자를 지정할 수 있음
+
+```javascript
+<script>
+    function methodTest3() {
+        var arr1 = ['bomin', 'eder', 'mota', 'minhyun'];
+        var arr1toString = arr1.toString();
+        var arr1Join = arr1.join("/");
+
+        console.log("arr1 : " + arr1); // bomin,eder,mota,minhyun
+        console.log("arr1의 자료형 : " + typeof(arr1)); // object
+        console.log("arr1toString : " + arr1toString); // bomin,eder,mota,minhyun
+        console.log("arr1toString의 자료형 : " + typeof(arr1toString)); // string
+        console.log("arr1Join : " + arr1Join); // bomin/eder/mota/minhyun
+        console.log("arr1Join의 자료형 : " + typeof(arr1Join)); // string
+    }
+</script>
+```
+
+- `sort()` : 배열을 오름차순으로 정렬
+`reverse()` : 배열의 순서를 뒤집음
+
+> `sort(), reverse()` 수행 시 원본 데이터의 순서 자체가 변함
+
+```javascript
+<script>
+    function methodTest4() {
+        var arr = new Array();
+
+        for(var i = 0; i < 10; i++){ // 배열에 10개의 랜덤값(0 ~ 100 생성)
+            arr[i] = Math.round(Math.random() * 100);
+        }
+
+        console.log("arr의 값 : " + arr);
+
+        // 오름차순 정렬
+        // 정렬 후 정렬 순서를 유지함
+        console.log("arr.sort() 후 값 : " + arr.sort(function(left, right){
+            return left - right;
+        }));
+
+        // 내림차순 정렬
+        console.log("내림차순 정렬 : " + arr.sort(function(left, right) {
+            return right - left;
+        }));
+        // reverse()를 이용한 내림차순 정렬
+        console.log("내림차순 정렬 : " + arr.sort().reverse());
+    }
+</script>
+```
+
+- `push()` : 배열의 맨 뒤에 요소 추가
+`pop()` : 배열의 맨 뒤 요소 제거
+
+```javascript
+<script>
+    function methodTest5() {
+        var arr = ['suwon', 'seongnam', 'incheon'];
+        console.log(arr); // suwon, seongnam, incheon
+
+        arr.push('hwaseong');
+        console.log(arr); // suwon, seongnam, incheon, hwaseong
+
+        arr.push('paju');
+        console.log(arr); // suwon, seongnam, incheon, hwaseong, paju
+
+        arr.sort();
+        console.log(arr); // hwaseong, incheon, paju, seongnam, suwon
+
+        console.log("arr에서 pop한 값 : " + arr.pop()); // suwon
+        console.log(arr); // hwaseong, incheon, paju, seongnam
+
+        console.log("arr에서 pop한 값 : " + arr.pop()); // seongnam
+        console.log(arr); // hwaseong, incheon, paju
+    }
+</script>
+```
+
+- `shift()` : 배열의 맨 앞에 요소 제거
+`unshift()` : 배열의 맨 앞에 요소 추가
+
+```javascript
+<script>
+    function methodTest6() {
+        var arr = ['suwon', 'seongnam', 'incheon'];
+        console.log(arr); // suwon, seongnam, incheon
+
+        arr.unshift('hwaseong');
+        console.log(arr); // hwaseong, suwon, seongnam, incheon
+
+        arr.unshift('paju');
+        console.log(arr); // paju, hwaseong, suwon, seongnam, incheon
+
+        arr.sort();
+        console.log(arr); // hwaseong, incheon, paju, seongnam, suwon
+
+        console.log("arr에서 shift한 값 : " + arr.shift()); // hwaseong
+        console.log(arr); // incheon, paju, seongnam, suwon
+    }
+</script>
+```
+
+- `slice()` : 배열의 요소 선택 잘라내기
+`splice()` : 배열의 index 위치의 요소 제거 및 추가
+
+```javascript
+<script>
+    function methodTest7() {
+        var arr = ['berlin', 'rio', 'galway', 'london'];
+        console.log(arr); // berlin, rio, galway, london
+
+        // slice(시작인덱스, 종료인덱스);
+        // 원본 배열에 영향 끼치지 않음
+        console.log("slice(2, 4) : " + arr.slice(2, 4)); // galway, london
+        console.log(arr); // berlin, rio, galway, london
+
+        // splice([index], 제거수, 추가값);
+        // 원본 배열에 영향을 미침
+        // 제거 완료 후 값이 추가 됨
+        console.log("splice(2, 1, 'jsp') : " + arr.splice(2, 1, 'atacama')); // galway
+        console.log(arr); // berlin, rio, atacama, london
+    }
+</script>
+```
 
 ## 함수(Function)
 
