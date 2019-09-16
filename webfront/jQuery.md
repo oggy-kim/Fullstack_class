@@ -48,7 +48,7 @@
 
 ### 전체 선택자 : (*)
 
-```jQuery
+```javascript
 $(document).ready(function(){
     $("*").css("color","red"); // css() 메소드 : 스타일과 관련된 기능 수행
 });
@@ -58,7 +58,7 @@ $(document).ready(function(){
 
 * `$("태그이름")`
 
-```jQuery
+```javascript
 <script>
     //  한종류의 태그를 선택하고 싶을 경우
     $(document).ready(function(){
@@ -80,7 +80,7 @@ $(document).ready(function(){
 
 * 특정한 클래스 속성을 가진 문서 객체를 선택하는 선택자`$(".클래스이름")`
 
-```jQuery
+```javascript
 <script>
     jQuery(document).ready(function(){
         $(".item").css("color", "orange");
@@ -95,7 +95,7 @@ $(document).ready(function(){
 
 * 특정한 아이디 속성을 가진 객체를 선택하는 선택자`$("#아이디이름")`
 
-```jQuery
+```javascript
 <script>
     jQuery(document).ready(function() {
         $("#id1").css("color", "brown");
@@ -111,7 +111,7 @@ $(document).ready(function(){
 
 * 기본 선택자의 앞에 붙여 사용하며, 기본 선택자의 범위를 제한
 
-```jQuery
+```javascript
 <script>
     $(document).ready(function(){
         $("div > h3").css("color", "violet"); // 자식 선택자 : '부모 > 자식'
@@ -136,7 +136,7 @@ $(document).ready(function(){
 요소[속성 *= 값] : 속성 안의 값이 특정값을 포함하는 객체 선택
 ```
 
-```jQuery
+```javascript
 <input type="text">
 <input type="number" class="test test1">
 <input type="radio">
@@ -160,7 +160,7 @@ $(document).ready(function(){
 
 * input 태그의 type 속성에 따른 문서 객체 선택
 
-```jQuery
+```javascript
 <script>
     $(document).ready(function() {
         $("input:text").css("background", "red"); 
@@ -177,6 +177,526 @@ $(document).ready(function(){
         $("input:radio").attr("checked", true);
         $("input:reset").css({"background":"blue", "color":"white"});
         $("input:submit").css({"background":"purple", "color":"white"});
+    });
+</script>
+```
+
+* checkbox의 상태에 대한 선택자
+
+```javascript
+<label>취미 : </label>
+<input type="checkbox" name="hobby" value="game" id="game">
+<label for="game">게임</label> 
+<input type="checkbox" name="hobby" value="movie" id="movie">
+<label for="movie">영화</label> 
+<input type="checkbox" name="hobby" value="music" id="music">
+<label for="music">음악</label>
+
+<script>
+    // input 태그 중 checkbox의 값에 변화가 있을 경우 function checkedChange() 실행
+    $("input:checkbox").change(checkedChange);
+
+    function checkedChange(){
+        console.log($(this).prop("checked")); // prop() : 선택한 요소의 속성 값을 반환하거나 설정
+
+        if($(this).prop("checked")){ // 선택한 요소의 값이 'checked'일 경우
+            $(this).css({"width":"50px","height":"50px"});
+        }else{
+            $(this).css({"width":"10px","height":"10px"});
+        }
+    }
+</script>
+```
+
+* select > option 태그의 상태에 대한 선택자
+
+```javascript
+<select id="national">
+    <option value="한국" selected>한국</option>
+    <option value="미국">미국</option>
+    <option value="일본">일본</option>
+    <option value="중국">중국</option>
+</select>
+
+<label>Selected : </label><input type="text" id="result">
+
+<script>
+    $(selectChange); // 초기 select 값 출력
+
+    $("#national").change(selectChange); // national option이 변경하면 그에 대한 function 실행
+
+    function selectChange(){
+        var value = $("option:selected").val(); // select 태그의 option 태그 중 선택 된 객체 선택
+
+        console.log(value);
+        $("#result").val(value);
+    }
+</script>
+```
+
+* input 상태에 대한 선택자
+
+```javascript
+<label>활성화 텍스트상자 : </label><input type="text"><br>
+<label>비 활성화 텍스트상자 : </label><input type="text" disabled><br>
+<label>활성화 버튼 : </label><input type="button" value="활성화"><br>
+<label>비 활성화 버튼 : </label><input type="button" value="비활성화" disabled><br>
+
+<script>
+    $("input:enabled").css("background", "yellow");
+    $("input:disabled").css("background", "red");
+</script>
+```
+
+* 순서에 따른 필터 선택자
+
+```javascript
+<table border="1">
+    <tr><th>name</th><th>blood type</th><th>region</th></tr>
+    <tr><td>bomin</td><td>B</td><td>seoul</td></tr>
+    <tr><td>eder</td><td>A</td><td>incheon</td></tr>
+    <tr><td>hyunsung</td><td>O</td><td>hwaseong</td></tr>
+    <tr><td>minhyun</td><td>AB</td><td>yongin</td></tr>
+    <tr><td>mathias</td><td>O</td><td>gwangju</td></tr>
+    <tr><td colspan="2">total</td><td>5</td></tr>
+</table>
+<script>
+    // 요소:odd -> 홀수번째 인덱스 객체 선택
+    // 요소:even -> 짝수번째 인덱스 객체 선택
+    // 요소:first -> 첫번째 위치한 객체 선택
+    // 요소:last -> 마지막에 위치한 객체 선택
+
+    $(document).ready(function(){
+        $("tr:first").css("backgroundColor", "black").css("color","white"); // 첫번째 tr
+        $("tr:last").css("backgroundColor", "red").css("color", "white"); // 마지막 tr
+        $("tr:odd").css("backgroundColor", "yellow"); // 홀수번째 tr
+        $("tr:even").css("backgroundColor", "lightgray"); // 짝수번째 tr
+    });
+</script>
+```
+
+## 필터링 메소드
+
+선택자로 지정한 객체(요소)를 기준으로 객체 그룹에서 위치를 가지고 객체를 선택하는 메소드
+
+### 필터링 메소드 사용법
+
+* 필터 메소드를 사용해 문서 객체를 선택할 수 있음
+
+```javascript
+// 테스트할 html 태그
+<h3 class="test">1</h3>
+<h3 class="test">2</h3>
+<h3 class="test">3</h3>
+<h3 class="test">4</h3>
+<h3>5</h4>
+<h3 class="test">6</h3>
+
+<script>
+    $(document).ready(function(){
+        $("h3:odd").css("background", "black").css("color", "white"); // 2, 4, 6
+
+        // filter() 메소드 사용
+        // filter() 메소드는 특정 기준과 일치하는 요소 반환
+
+        // test 클래스 요소 중 짝수 인덱스의 css 변경
+        $(".test").filter(":even").css({"background":"tomato", "color":"white"}); // 1, 3, 6
+
+        // 함수를 매개변수로 하는 filter() 메소드 사용
+        // 매개변수로 index 작성 시 필터링 되기 전의 인덱스 값을 전달 받는다
+        $(".test").filter(function(index){
+            // test 클래스 요소 중 홀수 인덱스의 css를 바꿈
+            return index % 2 == 1; // 리턴 결과가 true인 요소만 걸러냄
+        }).css({"background":"blue", "color":"white"}); // 2, 4
+
+        // 선택 된 요소 중 제일 처음에 있는 요소
+        $("h3").first().css("font-size","1.5em"); // 1
+
+        // 선택된 요소 중 제일 마지막에 있는 요소 리턴
+        $("h3").last().text($("h3").last().text() + " : Last"); // 6 : Last
+
+        // 인덱스 번호와 일치하는 요소만 리턴
+        $("h3").eq(3).text($("h3").eq(3).text() + " : eq() method filtered"); // 4 : eq() method filtered
+
+        // 인자값과 일치하지 않는 요소만 리턴
+        $("h4").not(".test").css({"background":"yellow", "color":"black"}); // 5
+    });
+</script>
+```
+
+## 순회(탐색) 메소드
+
+### Ancestors(조상) 메소드 : 선택된 요소의 상위 요소들을 선택할 수 있는 메소드
+
+`$('요소명').parent()` : 선택 된 요소의 바로 위 상위 요소
+`$('요소명').parents([매개변수])` : 선택 된 요소의 모든 상위 요소 리턴
+매개변수가 있으면 매개변수와 일치하는 부모만 리턴
+`$('요소명').parentsUntil(매개변수)` : 선택 된 요소부터 매개변수 요소까지 범위의 요소 리턴
+
+```javascript
+// 확인할 div 생성
+<div class="wrap">
+    <div class="type">div (great-grandparent)
+        <ul>ul (grand parent)
+            <li>li (direct parent)
+                <span>span</span>
+            </li>
+        </ul>
+    </div>
+    <div class="type">div (grand parent)
+        <p>p (direct parent)
+            <span>span</span>
+        </p>
+    </div>
+</div>
+<script>
+    $(document).ready(function(){
+        // parent() : 선택 된 요소의 바로 위 상위 요소만 리턴
+        // span 태그의 부모 요소 스타일 지정
+        $("span").parent().css({"color":"red", "border":"2px solid red"});
+
+        // parents() : 선택 된 요소의 모든 상위 요소 리턴
+        // li 태그의 모든 상위 요소 스타일 지정
+        $("li").parents().css("color","blue");
+
+        // li 태그의 상위 요소 중 div만 스타일 지정
+        $("li").parents("div").css("border", "2px dashed magenta");
+
+        // parentsUntil() : 선택된 요소부터 매개변수 요소까지 리턴
+        // span태그부터 div 태그 이전까지 스타일 지정
+        $("span").parentsUntil("div").css("backgroundColor", "black");
+    });
+</script>
+```
+
+### descendants(자손, 후손) 메소드 : 선택 된 요소의 하위 요소들을 선택 할 수 있는 메소드
+
+`$('요소명').children([매개변수])` : 선택 된 요소의 모든 자식 객체 리턴
+매개변수가 있으면 매개변수와 일치하는 자식 객체만 리턴
+
+`$('요소명').find(매개변수)` : 선택 된 요소의 인자와 일치하는 모든 후손 객체 리턴
+
+```javascript
+<div class="wrap">
+    <div class="type">div (great-grandparent)
+        <ul>ul (grand parent)
+            <li>li (direct parent)
+                <span>span</span>
+            </li>
+        </ul>
+    </div>
+
+    <div class="type">div (grand parent)
+        <p>p (direct parent)
+            <span>span</span>
+        </p>
+    </div>
+</div>
+
+<script>
+    var style1 = {"color":"red", "border":"2px solid red"};
+    var style2 = {"color":"blue", "border": "2px solid blue"};
+    var style3 = {"color":"green", "border": "2px solid green"};
+    var style4 = {"color":"orange", "border": "2px solid orange"};
+
+    // children()
+    // 클래스명이 wrap인 태그의 자손의 스타일 지정
+    $(".wrap").children().css(style1);
+
+    // 클래스명이 wrap인 태그의 자손의 자손의 스타일 지정
+    $(".wrap").children().children().css(style2);
+
+    // 클래스명이 wrap인 태그의 자손의 자손 중 ul 태그의 스타일 지정
+    $(".wrap").children().children("ul").css(style3);
+
+    // li의 스타일 style4로 변경
+    //$(".wrap").find("li").css(style4);
+    $(".wrap").children().children("ul").children("li").css(style4);
+
+    // find()
+    // 클래스명이 wrap인 모든 후손 중 span의 스타일 지정
+    $(".wrap").find("span").css({"color":"purple", "border":"2px solid purple"});
+
+</script>
+```
+
+### sideways 메소드 : 같은 레벨에 있는 요소(형제)를 선택할 수 있는 메소드
+
+`$('요소명').siblings([매개변수])` : 선택 된 요소와 같은 레벨(형제)에 있는 모든 요소 리턴
+매개변수가 있으면 같은 레벨에 있는 요소 중 매개변수와 일치하는 모든 요소 리턴
+`$('요소명').next()` : 선택 된 요소의 같은 레벨 중 선택 된 요소 다음 한 개 요소 리턴
+`$('요소명').nextAll()` : 선택 된 요소의 같은 레벨 중 선택 된 요소 다음의 모든 요소 리턴
+`$('요소명').nextUntil(매개변수)` : 선택 된 요소의 같은 레벨 중 매개변수 이전까지의 모든 요소 리턴
+ `$('요소명').prev()` : 선택 된 요소의 같은 레벨 중 선택 된 요소 이전 한 개 요소 리턴
+`$('요소명').prevAll()` : 선택 된 요소의 같은 레벨 중 선택 된 요소 이전의 모든 요소 리턴
+`$('요소명').prevUntil(매개변수)` : 선택 된 요소의 같은 레벨 중 매개변수 이전까지의 모든 요소 리턴
+
+```javascript
+<div class="wrap">div (parent)
+    <p>p</p>
+    <span>span</span>
+    <h2>h2</h2>
+    <h3>h3</h3>
+    <p>p</p>
+</div>
+
+<script>
+    var style1 = {"color":"red", "border":"2px solid red"};
+    var style2 = {"color":"blue", "border":"2px solid blue"};
+    var style3 = {"color":"yellow", "border":"2px solid yellow"};
+    var style4 = {"background":"aqua", "color":"red"};
+
+    // siblings([매개변수])
+    // h2 태그의 형제 객체 스타일 지정
+    $("h2").siblings().css(style1);
+
+    // h2 태그의 형제 객체 중 p 태그의 스타일 지정
+    $("h2").siblings("p").css(style2);
+
+    // next()
+    // h2 태그의 바로 다음 형제 요소의 스타일 지정
+    $("h2").next().css(style3);
+
+    // nextAll()
+    // h2 태그의 다음에 오는 모든 형제 요소의 스타일 지정
+    $("h2").nextAll().css(style4);
+
+    // nextUntil(매개변수)
+    // h2 태그부터 p 태그 이전의 모든 형제 요소의 스타일 지정
+    $("h2").nextUntil("p").css("font-size","3em").css("border","dashed");
+
+    // prev()
+    // h2 태그 바로 이전 형제 요소에 스타일 지정
+    $("h2").prev().css("backgroundColor", "pink"); 
+
+    // prevAll()
+    // h2 태그 이전 모든 형제 요소에 스타일 지정
+    $("h2").prevAll().css(style4);
+
+    // prevUntil(매개변수)
+    // h2 태그부터 p태그 이전의 모든 형제 요소의 스타일 설정
+    $("h2").prevUntil("p").css("border","dotted");   
+
+    // is([인자]) : 요소가 있는지 찾는 메소드
+    // 선택자로 지정된 범위에 특정한 요소가 존재하는지 찾을 때 사용
+    // 있으면 true, 없으면 false
+
+    // h2 태그 다음에 오는 모든 형제 요소들 중 p 태그가 있는지 검사
+    console.log($("h2").nextAll().is("p"));
+</script>
+```
+------------------------------------------------------------------------
+
+## content 관련 메소드
+
+### html() 메소드
+
+선택된 요소의 content 영역을 리턴하거나 설정하는 메소드이다.
+getter로 사용 시 해당 요소를 태그까지 포함하여 얻어오고
+setter로 사용 시 작성 된 html 태그를 실제 태그로 인식시킨다.
+
+```javascript
+<h1 id="test1"><a>Link to Daum</a></h1>
+<h1 id="test2"></h1>
+
+<script>
+    // getter
+    $(document).ready(function(){
+        var tmp = $("#test1").html();
+        console.log("html 메소드 리턴 값 : " + tmp); // <a>Link to Daum</a>
+
+        $("#test2").html(tmp); // test2의 innerHTML에 <a>Link to Daum</a> 추가
+        $("#test2").children("a").attr("href", "https://www.daum.ent"); // test2의 a태그에 링크속성 추가
+    });
+</script>
+
+<div class="testClass1">1</div>
+<div class="testClass1">2</div>
+<div class="testClass1">3</div>
+<script>
+    $(document).ready(function(){
+        // jQuery 메소드 :  text(), html() 및 val() 에는 콜백 함수도 함께 제공 됨
+        // 콜백 함수에는 선택 된 요소 목록의 현재 요소 인덱스와 원래(이전) 값의 두 매개변수가 있음
+        $(".testClass1").html(function(index, html){
+            // 이전 값 : 1, index : 0
+            // 이전 값 : 2, index : 1
+            // 이전 값 : 3, index : 2
+
+            return "<h1>이전 값 : " + html + ", index : " + index + "</h1>"; 
+        });
+    });
+</script>
+```
+
+### text() 메소드
+
+선택 된 요소의 content 영역을 리턴하거나 설정하는 메소드이다.
+getter로 사용 시 태그는 *무시*하고,
+setter로 사용 시 *html 태그를 문자 자체로 인식*한다.
+
+```javascript
+<h1 id="test3">Link to Google</h1>
+<h1 id="test4"></h1>
+
+<script>
+    //setter
+    $(document).ready(function(){
+        var tmp = $('#test3').text();
+        console.log("text() 리턴 값 : " + tmp); // Link to Google
+
+        $("#test4").text(tmp); // Link to Google
+    });
+</script>
+
+<div class="testClass2">1</div>
+<div class="testClass2">2</div>
+<div class="testClass2">3</div>
+
+<script>
+    $(document).ready(function(){
+        $(".testClass2").text(function(index, text){
+            // <h1>이전 값 : 1, index : 0</h1> --> h1 태그를 html 태그가 아닌 text로 인식
+            // <h1>이전 값 : 2, index : 1</h1>
+            // <h1>이전 값 : 3, index : 2</h1>
+            return "<h1>이전 값 : " + text + ", index : " + index + "</h1>";
+        });
+    });
+</script>
+```
+
+## 객체 생성 및 제거
+
+### 객체 생성
+
+```javascript
+<script>
+    $(document).ready(function(){
+        var txt1 = "<p>Create text with HTML</p>"; // html 
+
+        var txt2 = document.createElement("p");
+        txt2.innerHTML = " Create text with DOM"; // DOM
+
+        var txt3 = $("<p></p>").text("Create text with jQuery"); // jQuery
+
+        $("#area1").append(txt1, txt2, txt3); 
+    });
+</script>
+```
+
+### 삽입 메소드(A 기준)
+
+선택자 요소를 기준으로 매개변수에 작성 된 생성 된 요소 또는 함수의 리턴값을 추가
+
+`$(A).append(B)` : A 요소 내 뒷부분에 B를 추가(자식)
+`$(A).prepend(B)` : A 요소 내 앞부분에 B를 추가(자식)
+`$(A).after(B)` : A 요소 뒷부분에 B를 추가(형제)
+`$(A).before(B)` : A 요소 앞부분에 B를 추가(형제)
+
+```javascript
+<h1 id="test1"><span>A</span></h1>
+<h1 id="test2"><span>A</span></h1>
+<h1 id="test3"><span>A</span></h1>
+<h1 id="test4"><span>A</span></h1>
+
+<script>
+    $(document).ready(function(){
+        $("#test1").append("<span class='added'>B</span>"); // AB
+        $("#test2").prepend("<span class='added'>B</span>"); // BA
+        $("#test3").after("<span class='added'>B</span>"); // A \n B
+        $("#test4").before("<span class='added'>B</span>"); // B \n A
+    });
+</script>
+```
+
+### 삽입 메소드(B 기준)
+
+생성 된 요소를 매개변수로 지정한 선택자 요소에 추가(part1의 메소드와 선택자, 생성구문의 순서가 반대)
+
+`$(B).appendTo(A)` : B를 A의 요소 내 뒷부분에 추가(자식)
+`$(B).prependTo(A)` : B를 A의 요소 내 앞부분에 추가(자식)
+`$(B).insertAfter(A)` : B를 A의 요소 뒤에 추가(형제)
+`$(B).insertBefore(A)` : B를 A의 요소 앞에 추가(형제)
+
+```javascript
+<h1 id="test5"><span>A</span></h1>
+<h1 id="test6"><span>A</span></h1>
+<h1 id="test7"><span>A</span></h1>
+<h1 id="test8"><span>A</span></h1>
+
+<script>
+    // setInterval을 이용하여 1초마다 객체 추가
+    $(document).ready(function(){ // 위의 test1~4와 결과 동일
+        $("<span class='added'>B</span>").appendTo("#test5");
+        $("<span class='added'>B</span>").prependTo("#test6");
+        $("<span class='added'>B</span>").insertAfter("#test7");
+        $("<span class='added'>B</span>").insertBefore("#test8");
+    });
+</script>
+```
+
+### 객체 복제 메소드
+
+`clone([true|false])` : html 요소를 복사하는 메소드. 매개변수로 이벤트 복사 여부를 지정(기본 값 : false)
+
+```javascript
+<button id="clone">clone</button>
+<div id="clone-test">
+    <div id="item1" class="item"><span>Hello!</span></div>
+</div>
+<br>
+
+<script>
+    $(function(){
+        $("#item1").hover(function(){ // 마우스 오버 이벤트 추가
+            $(this).addClass("lime");
+        }, function(){
+            $(this).removeClass("lime");
+        });
+        $("#clone").click(function(){ // 버튼 클릭 이벤트 핸들러
+            $("#item1").clone(true).appendTo("#clone-test"); // 이벤트 복사 속성 값 true 추가
+        });
+    });
+</script>
+```
+
+### 객체 제거 메소드
+
+`empty()` : 모든 자식 요소를 제거
+`remove()` : DOM 요소 잘라내기(연관된 이벤트도 모두 삭제)
+`detach()` : DOM 요소 잘라내기(관련된 이벤트 모두 보관함)
+
+```javascript
+<button id="empty">empty</button>&nbsp;
+<button id="remove">remove</button>&nbsp;
+<button id="detach">detach</button><br>
+
+<div id="remove-test" class="box">
+    <div id="item2" class="item"><span>Hello</span></div>
+</div>
+<div id="result" class="box"></div>
+
+<script>
+    $(function(){
+        $("#item2").hover(function(){ // 이벤트 추가
+            $(this).addClass("lime");
+        }, function(){
+            $(this).removeClass("lime");
+        });
+
+        $("#empty").click(function(){ // empty 테스트
+            $("#remove-test").empty();
+        });
+
+        $("#remove").click(function(){ // remove 테스트
+            var el = $("#item2").remove();
+            $("#result").html(el);
+        });
+
+        $("#detach").click(function(){ // detach 테스트
+            var el = $("#item2").detach();
+            $("#result").html(el);
+        });
+
     });
 </script>
 ```
