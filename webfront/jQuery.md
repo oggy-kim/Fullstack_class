@@ -8,6 +8,7 @@
 적은 양의 코드로 빠르고, 풍부한 기능을 제공함.
 
   ※ library : 프로그램 개발 시 필요한 기능
+  
   ※ framework : 프로그램을 만들 때 사용하는 틀, 뼈대
 
 ### jQuery 연결 방법
@@ -329,8 +330,11 @@ $(document).ready(function(){
 ### Ancestors(조상) 메소드 : 선택된 요소의 상위 요소들을 선택할 수 있는 메소드
 
 `$('요소명').parent()` : 선택 된 요소의 바로 위 상위 요소
+
 `$('요소명').parents([매개변수])` : 선택 된 요소의 모든 상위 요소 리턴
+
 매개변수가 있으면 매개변수와 일치하는 부모만 리턴
+
 `$('요소명').parentsUntil(매개변수)` : 선택 된 요소부터 매개변수 요소까지 범위의 요소 리턴
 
 ```javascript
@@ -423,12 +427,19 @@ $(document).ready(function(){
 ### sideways 메소드 : 같은 레벨에 있는 요소(형제)를 선택할 수 있는 메소드
 
 `$('요소명').siblings([매개변수])` : 선택 된 요소와 같은 레벨(형제)에 있는 모든 요소 리턴
+
 매개변수가 있으면 같은 레벨에 있는 요소 중 매개변수와 일치하는 모든 요소 리턴
+
 `$('요소명').next()` : 선택 된 요소의 같은 레벨 중 선택 된 요소 다음 한 개 요소 리턴
+
 `$('요소명').nextAll()` : 선택 된 요소의 같은 레벨 중 선택 된 요소 다음의 모든 요소 리턴
+
 `$('요소명').nextUntil(매개변수)` : 선택 된 요소의 같은 레벨 중 매개변수 이전까지의 모든 요소 리턴
+
  `$('요소명').prev()` : 선택 된 요소의 같은 레벨 중 선택 된 요소 이전 한 개 요소 리턴
+
 `$('요소명').prevAll()` : 선택 된 요소의 같은 레벨 중 선택 된 요소 이전의 모든 요소 리턴
+
 `$('요소명').prevUntil(매개변수)` : 선택 된 요소의 같은 레벨 중 매개변수 이전까지의 모든 요소 리턴
 
 ```javascript
@@ -698,5 +709,371 @@ setter로 사용 시 *html 태그를 문자 자체로 인식*한다.
         });
 
     });
+</script>
+```
+
+### each() 메소드
+
+객체나 배열을 관리하는 `for in`문과 비슷한 메소드로 객체나 배열의 요소를 검사
+
+* 작성방법
+  1. `$.each(object, function(index, item){})` 의 형식으로 사용
+  * index : 배열의 인덱스 또는 객체의 키를 의미한다.
+  * item : 해당 인덱스나 키가 가진 값을 의미한다.
+
+  2. `$('선택자').each(function(index, item){})`
+
+```javascript
+<div id="area1"></div>
+<script>
+    $(document).ready(function(){ // 객체 배열 생성
+        var arr = [ {name : "Github", link : "http://www.github.com"},
+                    {name : "Google", link : "http://www.google.com"},
+                    {name : "w3c", link : "http://www.w3c.com"},
+                    {name : "w3school", link : "http://www.w3schools.com"}];
+        var output = "";
+        $.each(arr, function(index, item){ // arr에 하이퍼링크 추가
+            output += "<h2><a href=" + item.link + ">" + item.name + "</a></h2>";
+        });
+
+        $("#area1").html($("#area1").html() + output); // area1 div에 기존 내용에 덧붙여 html 추가
+    });
+</script>
+<hr>
+
+// each()를 통해서 style 추가
+<style> // 추가할 스타일
+    .highlight_0{background:red;}
+    .highlight_1{background:orange;}
+    .highlight_2{background:yellow;}
+    .highlight_3{background:green;}
+    .highlight_4{background:blue;}
+</style>
+
+<div id="wrap"> // 스타일이 추가될 html
+    <h1>item-0</h1>
+    <h1>item-1</h1>
+    <h1>item-2</h1>
+    <h1>item-3</h1>
+    <h1>item-4</h1>
+</div>
+<script>
+    $(document).ready(function(){
+        $("#wrap").children().each(function(index, item){ // wrap ID의 자식 태그들에게 each() 통해 index 순서로 class 추가하여 스타일과 연결
+            $(this).addClass("highlight_"+index);
+        });
+    });
+</script>
+```
+
+### `is()` : 문서 객체의 특징 판별
+
+매개변수로 선택자를 입력하고, 선택한 객체가 선택자와 일치하는지 판단하여 boolean 리턴
+
+```javascript
+<h3 class="test">test1</h3>
+<h3>test2</h3>
+<h3 class="test">test3</h3>
+<h3 class="test">test4</h3>
+<h3>test5</h3>
+<h3 class="test">test6</h3>
+<script>
+    $(function(){ // h3 태그에 차례대로 접근하여 class 속성이 "test"일 경우 스타일 변경
+        $("h3").each(function(){
+            if($(this).is(".test")){ // 1, 3, 4, 6에 css 적용됨
+                $(this).css({"background":"orangered", "color":"white"}); 
+            }
+        });
+    });
+</script>
+```
+
+### `$.extend()` 메소드 : 여러 개의 객체를 하나로 합칠 때 사용
+
+```javascript
+<script>
+    $(document).ready(function(){
+        var obj1 = {name:"Mota", age:40};
+        $.extend(obj1, {job:"player"});
+        console.log(obj1); // {name: "Mota", age: 40, job: "player"}
+
+        var obj2 = {name:"Molina", Strength:["Dribble", "Freekick"]};
+
+        // 두 객체를 하나로 합칠 때도 사용할 수 있으며, 중복되는 속성의 경우 덮어쓰기
+        $.extend(obj1, obj2);
+        console.log(obj1); // {name: "Molina", age: 40, job: "player", Strength: Array(2)}
+    });
+</script>
+```
+
+### '$.noConflict()` 메소드
+
+많은 자바스크립트 라이브러리가 `$` 기호를 함수, 변수로 사용하고 있기 때문에 jQuery 라이브러리와 충돌 가능성이 있음.
+이를 방지하기 위해 `noConflict()` 메소드를 통해 `$` 대신 새로운 alias 부여
+
+```javascript
+<h1 id="ncTest">Hello</h1>
+<script>
+    $(document).ready(function(){
+        $("#ncTest").css("color","red");
+    });
+
+    var jq = $.noConflict(); // jQuery에서 사용하는 별칭 : '$' --> 'jq'
+
+    jq(function(){ // 기존 $(function(){}) 형태로는 사용 불가
+         jq("#ncTest").css("color", "red");
+    });
+</script>
+```
+
+## 이벤트
+
+### 이벤트 관련 속성
+
+이벤트 핸들러의 매개변수로 event 객체를 전달한다.
+인라인 방식으로 이벤트 설정 시 매개변수 키워드는 event로 고정
+
+```javascript
+<button onclick="test(event);">실행확인</button>
+<script>
+    function test(e){
+        console.log(e); // MouseEvent 생김
+        console.log(e.target); // 이벤트가 발생한 객체 리턴 : <button onclick="test(event);">실행확인</button>
+    }
+</script>
+```
+
+### 이벤트 연결 종류
+
+요소 객체에 이벤트 발생 시 연결될 이벤트 핸들러를 지정하는 메소드
+
+_`$('선택자').bind()` : 현재 존재하는 문서 객체만 이벤트 연결_
+
+_`$('선택자').unbind()` : bind()로 연결 된 이벤트 제거_
+
+
+`bind(), unbind()` 메소드는 jquery3.0부터 deprecated로 설정
+
+> `on(), off()` 메소드 사용
+
+`$('선택자').on("이벤트명", "이벤트 핸들러")`, `$('선택자').off()`
+
+* `on()` 메소드의 기본 사용법
+
+```javascript
+<h1 id="test1">Your Mouse, here!</h1>
+
+<script>
+    // on() 메소드 기본적인 사용법
+    $("#test1").on('click', function(){
+        console.log(event.target); // <h1 id="test1">Your Mouse, here!</h1>
+        console.log($(this).text()); // Your Mouse, here!
+    });
+
+    // on() 안에 객체 타입으로 여러 이벤트를 작성 가능
+    $("#test1").on({'mouseenter':function(){
+        $(this).css("background", "yellowgreen").text("Your Mouse is here!");
+    }, 'mouseleave':function(){
+        $(this).css("background", "yellow").text("Your Muose is gone away..");
+    }, 'click':function(){ // off()를 통해 mouseenter, mouseleave 이벤트 제거
+        $(this).off('mouseenter').off('mouseleave').css("background", "orangered").text("Mouse Event Deleted.");
+    }});
+</script>
+```
+
+* `$('선택자').on(event, selector, handler)`
+
+선택자를 기준으로 매개변수로 전달된 selector에 지정한 event 발생 시 해당 handler를 동적 적용시켜 이벤트 처리 가능
+
+```javascript
+<div id="wrap">
+    <h2>Add new h2 Tag</h2>
+</div>
+<script>
+    $(document).on('click', 'h2', add); // h2 태그를 클릭하면, 새로운 h2 태그를 생성함
+
+    function add(e){
+        console.log(e.target); // <h2>Add new h2 Tag</h2>
+        $("#wrap").append("<h2>h2 Tag added!</h2>");
+    }
+</script>
+```
+
+* `one()` 메소드 : 이벤트를 한 번만 연결할 때 사용
+
+```javascript
+<h1 id="test">Click!</h1>
+<script>
+    $(function(){
+        $("#test").one('click', function(){
+            console.log("It's Only one log!"); // 한번만 콘솔창에 로그가 남음
+        });
+    });
+</script>
+```
+
+### 이벤트 연결 메소드
+
+#### 마우스 관련 메소드
+ 
+```javascript
+<div class="outer o1" width="300px" height="300px" padding="50px">
+    <div class="inner" width="200px" height="200px"></div>
+</div>
+<p id="output"></p>
+<div class="outer o2" width="300px" height="300px" padding="50px>
+    <div class="inner" width="200px" height="200px"></div>
+</div>
+<p id="output2"></p>
+
+<script>
+    $(document).ready(function(){
+        // mouseover, mouseout -> 자식 요소 접근 시에도 이벤트 발생
+
+        // mouseover() : 마우스가 요소에 있을 경우
+        $(".o1").mouseover(function(){ // 부모 클래스에서 이벤트 지정 시
+            $("#output").text($("#output").text() + 'OVER!'); // 자식 클래스에서도 이벤트 발생
+        });
+
+        // mouseout() : 마우스가 요소에서 나갈 때
+        $(".o1").mouseout(function(){
+            $("#output").text($("#output").text() + 'OUT!');
+        });
+
+        // mouseenter(), mouseleave()
+        // -> 자식 요소 접근 시에는 이벤트가 발생하지 않음
+
+        // mouseenter() : 마우스가 요소에 들어올 때
+        $(".o2").mouseenter(function(){ // 부모 클래스에서 이벤트 지정 시
+            $("#output2").text($("#output2").text() + 'ENTER!'); // 자식 클래스에서는 이벤트 미발생
+        });
+
+        // mouseleave() : 마우스가 요소에서 나갈 때
+        $(".o2").mouseleave(function(){
+            $("#output2").text($("#output2").text() + 'LEAVE');
+        });
+    });
+</script>
+```
+
+#### 키보드 이벤트
+
+keydown : 키보드가 눌려질 때.
+keypress : 글자가 입력 될 때. Fn 키, 기능 키 사용 못함.
+keyup : 키보드가 떼어질 때.
+
+```javascript
+<input type="text" id="test">
+<script>
+    $(document).ready(function(){
+        $("#test").keydown(function(e){
+            console.log("keydown : " + e.key); // 누르면 계속 로그 생성
+        });
+
+        $("#test").keypress(function(e){
+            console.log("keypress : "+ e.key); // Ctrl, Shift 등 Fn키는 로그 생성하지 않음
+        });
+
+        $("#test").keyup(function(e){
+            console.log("keyup : " + e.key); // 키보드에서 손을 떼야 로그 생성
+        });
+    });
+</script>
+```
+
+#### 동적으로 글자수 세기
+
+```javascript
+// 글자수를 셀 textarea 생성
+<div>
+    <p><span id="counter">0</span>/150</p>
+    <textarea cols="70" rows="5"></textarea>
+</div>
+<script>
+    $(document).ready(function(){
+        $("textarea").keyup(function(){ // textarea에서 keyup 이벤트가 발생했을 경우
+            var inputLength = $(this).val().length; // 현재 요소(textarea)의 값의 길이를 저장
+            $("#counter").html(inputLength);
+
+            var remain = 150 - inputLength;
+
+            if(remain >= 0){
+                $("#counter").css("color", "black"); // 기본값
+            }else {
+                $("#counter").css("color", "red"); // 색상 변경
+            }
+        });
+    });
+</script>
+```
+
+#### 동적으로 아이디 조건 확인
+
+```javascript
+/*
+    - 첫 글자는 반드시 영문 소문자
+    - 영문 소문자와 숫자로만 이루어짐
+    - 총 4~12자 */
+
+// 아이디 조건 입력받을 input 생성
+<label for="memberId">ID : </label>
+<input type="text" name="memberId" id="memberId">
+<span id="idCheck"></span>
+
+<script>
+    var regExp = /^[a-z][a-z\d]{3,11}$/; // 아이디 검사 정규표현식
+
+    $(document).ready(function(){
+        $("#memberId").keyup(function(){
+            if(regExp.test($(this).val())){ // 정규식을 통과하면
+                $("#idCheck").css({'color':'green', 'font-weight':'bolder'}).html("사용 가능한 아이디 형식입니다.");
+            }else{ // 통과하지 못할 경우
+                $("#idCheck").css({'color':'red', 'font-weight':'bolder'}).html("사용할 수 없는 아이디 형식입니다.");
+            }
+        });
+    });
+</script>
+```
+
+#### `trigger()` 메소드
+
+특정 이벤트나 기본 이벤트를 강제로 발생 시키는 메소드로, 사용자 정의 이벤트 발생 시 사용하며 이벤트 발생 시 인자 값 전달 가능
+
+```javascript
+<div class="trg" id="trg">
+    click Num : <span>0</span>
+</div>
+<div class="increment" id="increment">click me!</div>
+<script>
+    var ctn = 0;
+    $(function(){
+        $("#trg").on('click', function(){
+            ctn++;
+            $("span").text(ctn);
+        });
+
+        $("#increment").click(function(){ // click 이벤트 핸들러를 요청함
+            $("#trg").trigger('click');
+        });
+    });
+</script>
+
+/*
+    trigger 메소드는 실제 클릭이 일어나는 것이 아닌 click 이벤트 핸들러를 호출함.
+    그래서 아래 경우에 링크로 실제 이동하지 않음.
+*/
+
+<a href="https://www.google.com" id="goGoogle" onclick="justClicked();">Go to Google</a>
+<button id="btnTrg">trigger를 통한 a 태그 클릭</button>
+<script>
+    jQuery(function(){
+        $("#btnTrg").click(function(){
+            $("#goGoogle").trigger('click');
+        });
+    });
+
+    function justClicked(){
+        console.log("justClicked!!"); // button을 통한 trigger 메소드는 실제 링크로 이동할 수 없다.
+    }
 </script>
 ```
