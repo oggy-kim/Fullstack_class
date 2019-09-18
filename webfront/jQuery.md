@@ -1077,3 +1077,255 @@ keyup : 키보드가 떼어질 때.
     }
 </script>
 ```
+
+### display 속성 메소드
+
+#### 시각적 효과
+
+* Effect 메소드 : 페이지에 애니메이션 효과를 만들기 위한 메소드 집합
+
+```
+1. $('s').메소드명();
+2. $('s').메소드명([speed],);
+3. $('s').메소드명([speed], [easing], [callback]);
+speed : 실행속도(밀리세컨초) / 숫자 or slow, fast
+easing : 변경되는 지점별 속도 / linear, swing 가능
+callback : 메소드 실행 후 실행할 함수
+```
+
+`show()`, `hide()` : 문서 객체를 크게 하며 보여주거나 작게 하며 사라지게 한다
+
+  - 사용법 : `$(selector).show(speed, easing, callback);`
+
+```javascript
+<button id="show">Show</button>
+<button id="hide">Hide</button><br>
+<img id="berlin" src="https://www.thelocal.de/userdata/images/article/cb964e6f592a0abb65c7cc19f14d59a96ca0af995d2ec371812dd6c41b202d34.jpg">
+<script>
+    $(function(){
+        $("#show").click(function(){
+            $("#berlin").show(1000); // 1000밀리세컨드(1초)의 시간동안 width, height가 커짐
+        });
+
+        $("#hide").click(function(){
+            $("#berlin").hide(1000); // 1000밀리세컨드(1초)의 시간동안 width, height가 작아짐
+        });
+    });
+</script>
+
+<button id="toggle">Toggle</button>
+<br>
+<img id="london" src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Palace_of_Westminster_from_the_dome_on_Methodist_Central_Hall.jpg/1000px-Palace_of_Westminster_from_the_dome_on_Methodist_Central_Hall.jpg">
+<script>
+    $("#toggle").click(function(){
+        console.log($("#london").css('display')); // display가 보일 때 : inline, 안보일때 : none
+        if($("#london").css('display') == 'none') { // 버튼을 누르면 현재 display 상태에 따라 show(), hide()됨
+            $("#london").show(1000);
+        } else {
+            $("#london").hide(1000);
+        }
+    });
+</script>
+```
+
+* slide 메소드
+
+`slideDown()`과 `slideUp()`
+
+  - 사용법 : `$(selector).slideUp(speed, easing, callback)`
+
+```javascript
+// div 및 contents 영역의 크기 style 지정
+<style>
+div {
+    width:300px;
+    height:30px;
+    background:yellowgreen;
+    color:orangered;
+    border-radius:10px;
+    text-align:center;
+    border:1px solid green;
+    cursor:pointer;
+}
+p.contents{
+    border:1px solid lightgray;
+    width:300px;
+    height:200px;
+    display: none;
+}
+</style>
+// div, contents html
+<div>No.1</div>
+<p class="contents">1</p>
+<div>No.2</div>
+<p class="contents">2</p>
+<div>No.3</div>
+<p class="contents">3</p>
+<div>No.4</div>
+<p class="contents">4</p>
+<div>No.5</div>
+<p class="contents">5</p>
+
+<script>
+    $(function(){
+        $('div').click(function() {
+            if($(this).next("p").css("display") == "none") { // div의 p 태그 display가 닫혀있을 때
+                $(this).siblings("p.contents").slideUp(); // 모든 다른 contents의 영역을 닫고
+                $(this).next().slideDown(); // 클릭한 div의 p태그를 연다.
+            } else { // 만약 div의 p태그 display가 열려있을 때
+                $(this).next().slideUp(); // 클릭한 div의 p태그를 닫는다.
+            }
+        })
+    })
+</script>
+```
+
+* `fade()` 메소드
+
+  * `fadeIn` : 점점 진하게 변하면서 보여지는 효과
+
+  * `fadeOut` : 점점 희미하게 변하면서 사라지는 효과
+
+  * `fadeTo` : 설정한 값까지 희미해지는 효과 -> opacity 값으로 투명도 설정
+
+  * `fadeToggle` : fadeIn과 fadeOut을 동시에 적용하는 메소드
+
+  * 사용법 : `$('s').fideIn/Out/Toggle([속도],[구간별속도],[callback]);`, `$('s').fadeTo([시간],[투명도],[구간별속도],[callback]);`
+
+```javascript
+<button id="fadein">fadeIn()</button>
+<button id="fadeout">fadeOut()</button><br>
+
+<!-- fadeIn(), fadeOut() -->
+<img id="moscow" src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Panoramic_view_of_Moscow1.jpg/600px-Panoramic_view_of_Moscow1.jpg">
+
+<script>
+    $(function(){
+        $("#fadein").click(function(){ // fadeIn()을 클릭하면 img가 서서히 나온다.(1초)
+            $("img").fadeIn(1000);
+        });
+        $("#fadeout").click(function(){ // fadeOut()을 클릭하면 img가 서서히 사라진다.(1초)
+            $("img").fadeOut(1000);
+        });
+    });
+</script>
+
+<!-- fadeToggle() -->
+<button id="toggle">fadeToggle()</button>
+<img id="saint" src="https://media.tacdn.com/media/attractions-splice-spp-674x446/06/70/64/98.jpg">
+<script>
+    $(function(){
+        $("#toggle").click(function(){ // fadeToggle()을 클릭하면, 상태에 따라 img가 나오거나 사라진다.
+            $("#saint").fadeToggle(1000, function(){
+                alert("Toggle Complete!"); // fadeIn() or fadeOut() 완료시 alert창 나옴.
+            });
+        });
+    });
+</script>
+
+<!-- fadeTo() -->
+<img id="moscow1" src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Panoramic_view_of_Moscow1.jpg/600px-Panoramic_view_of_Moscow1.jpg">
+
+<script>
+    $(function(){ 
+        $("#moscow1").hover(function(){
+            $(this).fadeTo(700, 1); // 마우스를 올리면 0.7초동안 투명도 1(불투명)으로 변경
+        }, function(){
+            $(this).fadeTo(700, 0.4); // 마우스를 떼면 0.7초동안 투명도 0.4(약간 투명)으로 변경
+        });
+    });
+</script>
+```
+
+### 애니메이션
+
+애니메이션 효과를 만들기 위한 메소드 집합
+
+#### 'animate() 메소드
+
+```
+<code>.animate(properties [, duration] [, easing] [, complete])</code>
+properties : 변경할 css 속성을 객체로 전달
+duration : 기본 값은 400, millisec|slow|fast
+easing : 속도 옵션. swing | linear 기본값은 swing
+         더 많은 easing function은 jqueryUI 또는 별도의 plugin을 사용해야 함
+complete : 애니메이션이 완료 되었을 때 호출 될 콜백함수 작성
+```
+
+```javascript
+<script>
+    // w3schools에서 기본 지원되는 속성 확인(https://www.w3schools.com/jquery/eff_animate.asp)
+    // color 같은 경우 기본적으로 지원하지 않으므로, jquery-ui의 color 플러그인을 import 해서 사용(https://api.jqueryui.com/color-animation/)
+
+    $(function(){
+        $("#btn1").click(function(){
+            $("#test1").animate({width:"500px", backgroundColor:"blue"}, 1000, function(){
+                alert("Animate Complete!"); // 1초에 걸쳐 test1 id 영역이 width 500px로 size 변경 후 alert창 뜸
+            });
+        });
+    });
+</script>
+
+<img src="https://techcrunch.com/wp-content/uploads/2015/08/safe_image.gif" width="150px" heihgt="100px" class="image">
+<script>
+    $(document).ready(function(){
+        $(".image").click(function(event){ // image class를 가진 img를 클릭할 경우
+            $(this).animate({'left':'-160px'}, 'slow'); // 해당 img가 왼쪽으로 160px 이동(웹브라우저에서 보이지 않게 됨)
+        });
+    });
+</script>
+
+<p>가운데 위치한 div 컨테이너 안에서 img를 우측으로 보내서 감추어 보기. div 컨테이너의 css 속성 width, overflow 등을 설정
+<div id="scroller">
+    <img src="https://techcrunch.com/wp-content/uploads/2015/08/safe_image.gif" width="150px" height="100px" class="image2">
+</div>
+<script>
+    $(document).ready(function(){
+        $(".image2").click(function(){ // img를 우측으로 160px 이동
+            $(this).animate({'left':'160px'}, 1000);
+        });
+    });
+</script>
+```
+
+#### 상대적 애니메이션
+
+```javascript
+// div의 스타일 지정
+<style>
+    div{
+        width:50px;
+        height:50px;
+        position:relative;
+    }
+</style>
+
+// div html 지정
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+
+<script>
+    $(function(){
+        $("div").click(function(){
+            var w = $(this).width();
+            var h = $(this).height();
+
+            console.log(w);
+            console.log(h);
+
+            $(this).animate({width:w+50,height:h+50}, "slow");
+
+        });
+
+        $("div").each(function(index){ // 위에서부터 아래로 상자 색깔이 변경된 상태로 
+            $(this).css("backgroundColor", "rgb(255,220," + (index*30) + ")");
+            $(this).delay(index * 50).animate({left:200}, 'slow'); // 조금씩 딜레이되어 animation이 실행됨
+        });
+    });
+</script>
+```
